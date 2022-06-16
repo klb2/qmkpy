@@ -50,8 +50,9 @@ def test_cp():
                         [2, 4, 2, 6],
                         [3, 5, 6, 3]])
     weights = [1, 2, 3, 4]
-    capacities = [10, 23, 11]
+    capacities = [5, 5, 3]
     solution = constructive_procedure(capacities, weights, profits)
     print(solution)
     total_profit = total_profit_qmkp(profits, solution)
     print(total_profit)
+    assert total_profit > 0

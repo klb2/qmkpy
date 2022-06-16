@@ -56,11 +56,14 @@ def constructive_procedure(capacities: Iterable[float],
     """Algorithm 1
 
     """
+    capacities = np.array(capacities)
+
     # 1. Initialization
     num_items = len(weights)
     num_ks = len(capacities)
     j_prime = list(range(num_items))
     idx_c_bar = np.argsort(capacities)[::-1]
+    c_bar = capacities[idx_c_bar]
     densities = value_density(profits, j_prime, weights)
     idx_sort_objects = np.argsort(densities)[::-1]
 
@@ -70,10 +73,14 @@ def constructive_procedure(capacities: Iterable[float],
     #while len(j_prime) > 0:
     for idx_curr_object in idx_sort_objects:
         _weight_l = weights[idx_curr_object]
-        if np.any(capacities >= _weight_l):
-            pass
+        _ks_w_space = np.where(c_bar >= _weight_l)[0]
+        if len(_ks_w_space) >= 1:
+            _ks_bar = _ks_w_space[0]
+            _real_ks = idx_c_bar[_ks_bar]
+            solution[idx_curr_object, _real_ks] = 1
+            c_bar[_ks_bar] = c_bar[_ks_bar] - _weight_l
         else:
-            solution[idx_curr_object, :] = 0.
+            solution[idx_curr_object, :] = 0
         j_prime.remove(idx_curr_object)
     assert len(j_prime) == 0
     return solution
