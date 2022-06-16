@@ -56,3 +56,16 @@ def test_cp():
     total_profit = total_profit_qmkp(profits, solution)
     print(total_profit)
     assert total_profit > 0
+
+def test_cp_large():
+    num_elements = 20
+    num_knapsacks = 5
+    profits = np.random.randint(0, 8, size=(num_elements, num_elements))
+    profits = profits @ profits.T
+    weights = np.random.randint(1, 5, size=(num_elements,))
+    capacities = np.random.randint(3, 12, size=(num_knapsacks,))
+    solution = constructive_procedure(capacities, weights, profits)
+    print(solution)
+    total_profit = total_profit_qmkp(profits, solution)
+    print(total_profit)
+    assert total_profit > 0
