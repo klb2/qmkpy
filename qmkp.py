@@ -108,15 +108,49 @@ def constructive_procedure(capacities: Iterable[float],
 def fcs_procedure(capacities: Iterable[float],
                   weights: Iterable[float],
                   profits: np.array):
+    """
+    (Based on Algorithm 2 of (Aider, Gacem, Hifi, 2022).)
+
+    Parameters
+    ----------
+    capacities : list of int
+        Capacities of the knapsacks. The number of knapsacks :math:`M` is
+        determined as `M=len(c)`.
+
+    weights : list
+        List of weights :math:`w_i` of the :math:`N` items that can be
+        assigned.
+
+    profits : array of size :math:`N \\times N`
+        Symmetric matrix that contains the (joint) profit values :math:`p_{ij}`
+
+    Returns
+    -------
+    x_opt : 
+        Found solution to the QMKP
+    """
     capacities = np.array(capacities)
 
     # 1. Initialization
     num_items = len(weights)
     num_ks = len(capacities)
-    solution_best = constructive_procedure(capacities, weights, profits)
+    current_solution = constructive_procedure(capacities, weights, profits)
+    solution_best = np.copy(current_solution)
     alpha = np.random.rand()
     while True:
-        pass
+        s1 = np.where(np.any(current_solution, axis=1))[0]
+        _dropped_items = np.random.choice(s1, size=int(len(s1)*alpha),
+                                          replace=False)
+        start_assign = np.copy(current_solution)
+        start_assign[_dropped_items, :] = 0
+        s_prime = constructive_procedure(capacities, weights, profits,
+                                         starting_assignment=start_assign)
+        _profit_best = total_profit_qmkp(profits, solution_best)
+        _profit_prime = total_profit_qmkp(profits, s_prime)
+        if _profit_prime > _profit_best:
+            solution_best = s_prime
+        if np.random.rand() > 0.5:
+            current_solution = solution_best
     return solution_best
 
 def efcs_procedure():
