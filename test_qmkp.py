@@ -56,26 +56,29 @@ def test_profit2():
     print(_objective)
     assert expected == _objective
 
-def test_cp_shape():
+@pytest.mark.parametrize("solver", (constructive_procedure, fcs_procedure))
+def test_solver_shape(solver):
     profits = np.array([[1, 1, 2, 3],
                         [1, 1, 4, 5],
                         [2, 4, 2, 6],
                         [3, 5, 6, 3]])
     weights = [1, 2, 3, 3]
     capacities = [5, 5, 3]
-    solution = constructive_procedure(capacities, weights, profits)
+    solution = solver(capacities, weights, profits)
     print(solution)
     assert (np.all(np.shape(solution) == (len(weights), len(capacities))) and
             util.is_binary(solution))
 
-def test_cp():
+
+@pytest.mark.parametrize("solver", (constructive_procedure, fcs_procedure))
+def test_solver(solver):
     profits = np.array([[1, 1, 2, 3],
                         [1, 1, 4, 5],
                         [2, 4, 2, 6],
                         [3, 5, 6, 3]])
     weights = [1, 2, 3, 3]
     capacities = [5, 5, 3]
-    solution = constructive_procedure(capacities, weights, profits)
+    solution = solver(capacities, weights, profits)
     print(solution)
     total_profit = total_profit_qmkp(profits, solution)
     print(total_profit)
@@ -128,15 +131,3 @@ def test_cp_with_starting():
                                       starting_assignment=starting_assignment)
     _new_assignments = solution - starting_assignment
     assert np.all(_new_assignments >= 0)
-
-def test_fcs_shape():
-    profits = np.array([[1, 1, 2, 3],
-                        [1, 1, 4, 5],
-                        [2, 4, 2, 6],
-                        [3, 5, 6, 3]])
-    weights = [1, 2, 3, 3]
-    capacities = [5, 5, 3]
-    solution = fcs_procedure(capacities, weights, profits)
-    print(solution)
-    assert (np.all(np.shape(solution) == (len(weights), len(capacities))) and
-            util.is_binary(solution))
