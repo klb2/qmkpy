@@ -1,7 +1,8 @@
 import numpy as np
 import pytest
 
-from qmkp import value_density, total_profit_qmkp, constructive_procedure
+from qmkp import (value_density, total_profit_qmkp, constructive_procedure,
+                  fcs_procedure)
 import util
 
 
@@ -127,3 +128,15 @@ def test_cp_with_starting():
                                       starting_assignment=starting_assignment)
     _new_assignments = solution - starting_assignment
     assert np.all(_new_assignments >= 0)
+
+def test_fcs_shape():
+    profits = np.array([[1, 1, 2, 3],
+                        [1, 1, 4, 5],
+                        [2, 4, 2, 6],
+                        [3, 5, 6, 3]])
+    weights = [1, 2, 3, 3]
+    capacities = [5, 5, 3]
+    solution = fcs_procedure(capacities, weights, profits)
+    print(solution)
+    assert (np.all(np.shape(solution) == (len(weights), len(capacities))) and
+            util.is_binary(solution))

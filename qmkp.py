@@ -137,7 +137,9 @@ def fcs_procedure(capacities: Iterable[float],
     current_solution = constructive_procedure(capacities, weights, profits)
     solution_best = np.copy(current_solution)
     alpha = np.random.rand()
-    while True:
+    #profit_history = []
+    no_improvement = 0
+    while no_improvement < 10:
         s1 = np.where(np.any(current_solution, axis=1))[0]
         _dropped_items = np.random.choice(s1, size=int(len(s1)*alpha),
                                           replace=False)
@@ -147,8 +149,10 @@ def fcs_procedure(capacities: Iterable[float],
                                          starting_assignment=start_assign)
         _profit_best = total_profit_qmkp(profits, solution_best)
         _profit_prime = total_profit_qmkp(profits, s_prime)
+        no_improvement = no_improvement + 1
         if _profit_prime > _profit_best:
             solution_best = s_prime
+            no_improvement = 0
         if np.random.rand() > 0.5:
             current_solution = solution_best
     return solution_best
