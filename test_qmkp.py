@@ -2,6 +2,7 @@ import numpy as np
 import pytest
 
 from qmkp import value_density, total_profit_qmkp, constructive_procedure
+import util
 
 
 def test_value_density():
@@ -54,6 +55,18 @@ def test_profit2():
     print(_objective)
     assert expected == _objective
 
+def test_cp_shape():
+    profits = np.array([[1, 1, 2, 3],
+                        [1, 1, 4, 5],
+                        [2, 4, 2, 6],
+                        [3, 5, 6, 3]])
+    weights = [1, 2, 3, 3]
+    capacities = [5, 5, 3]
+    solution = constructive_procedure(capacities, weights, profits)
+    print(solution)
+    assert (np.all(np.shape(solution) == (len(weights), len(capacities))) and
+            util.is_binary(solution))
+
 def test_cp():
     profits = np.array([[1, 1, 2, 3],
                         [1, 1, 4, 5],
@@ -65,7 +78,8 @@ def test_cp():
     print(solution)
     total_profit = total_profit_qmkp(profits, solution)
     print(total_profit)
-    assert np.all(np.shape(solution) == (len(weights), len(capacities))) and total_profit > 0
+    assert total_profit > 0
+
 
 def test_cp_large():
     num_elements = 20
@@ -97,3 +111,19 @@ def test_cp_with_starting():
     total_profit = total_profit_qmkp(profits, solution)
     print(total_profit)
     assert np.all(np.shape(solution) == (len(weights), len(capacities))) and total_profit > 0
+
+def test_cp_with_starting():
+    profits = np.array([[1, 1, 2, 3],
+                        [1, 1, 4, 5],
+                        [2, 4, 2, 6],
+                        [3, 5, 6, 3]])
+    weights = [1, 3, 2, 2]
+    capacities = [5, 5, 3]
+    starting_assignment = np.array([[0, 0, 0],
+                                    [0, 1, 0],
+                                    [0, 0, 0],
+                                    [1, 0, 0]])
+    solution = constructive_procedure(capacities, weights, profits,
+                                      starting_assignment=starting_assignment)
+    _new_assignments = solution - starting_assignment
+    assert np.all(_new_assignments >= 0)
