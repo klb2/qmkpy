@@ -57,7 +57,7 @@ def test_profit2():
     assert expected == _objective
 
 @pytest.mark.parametrize("solver", (constructive_procedure, fcs_procedure))
-def test_solver_shape(solver):
+def test_solver_feasibility(solver):
     profits = np.array([[1, 1, 2, 3],
                         [1, 1, 4, 5],
                         [2, 4, 2, 6],
@@ -66,8 +66,7 @@ def test_solver_shape(solver):
     capacities = [5, 5, 3]
     solution = solver(capacities, weights, profits)
     print(solution)
-    assert (np.all(np.shape(solution) == (len(weights), len(capacities))) and
-            util.is_binary(solution))
+    assert util.is_feasible_solution(solution, capacities, weights, profits)
 
 
 @pytest.mark.parametrize("solver", (constructive_procedure, fcs_procedure))
@@ -85,14 +84,15 @@ def test_solver(solver):
     assert total_profit > 0
 
 
-def test_cp_large():
+@pytest.mark.parametrize("solver", (constructive_procedure, fcs_procedure))
+def test_solver_large(solver):
     num_elements = 20
     num_knapsacks = 5
     profits = np.random.randint(0, 8, size=(num_elements, num_elements))
     profits = profits @ profits.T
     weights = np.random.randint(1, 5, size=(num_elements,))
     capacities = np.random.randint(3, 12, size=(num_knapsacks,))
-    solution = constructive_procedure(capacities, weights, profits)
+    solution = solver(capacities, weights, profits)
     print(solution)
     total_profit = total_profit_qmkp(profits, solution)
     print(total_profit)
