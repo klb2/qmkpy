@@ -10,10 +10,20 @@ def test_value_density():
                         [2, 4, 2, 6],
                         [3, 5, 6, 3]])
     weights = [1, 2, 3, 4]
-    #sel_objects = [0, 1, 0, 1]
     sel_objects = [1, 3]
     expected = np.array([5, 6/2, 12/3, 8/4])
     vd = value_density(profits, sel_objects, weights)
+    assert np.all(expected == vd)
+
+def test_value_density_reduced_output():
+    profits = np.array([[1, 1, 2, 3],
+                        [1, 1, 4, 5],
+                        [2, 4, 2, 6],
+                        [3, 5, 6, 3]])
+    weights = [1, 2, 3, 4]
+    sel_objects = [1, 3]
+    vd = value_density(profits, sel_objects, weights, reduced_output=True)
+    expected = np.array([6/2, 8/4])
     assert np.all(expected == vd)
 
 def test_profit():
@@ -49,13 +59,13 @@ def test_cp():
                         [1, 1, 4, 5],
                         [2, 4, 2, 6],
                         [3, 5, 6, 3]])
-    weights = [1, 2, 3, 4]
+    weights = [1, 2, 3, 3]
     capacities = [5, 5, 3]
     solution = constructive_procedure(capacities, weights, profits)
     print(solution)
     total_profit = total_profit_qmkp(profits, solution)
     print(total_profit)
-    assert total_profit > 0
+    assert np.all(np.shape(solution) == (len(weights), len(capacities))) and total_profit > 0
 
 def test_cp_large():
     num_elements = 20
@@ -69,3 +79,21 @@ def test_cp_large():
     total_profit = total_profit_qmkp(profits, solution)
     print(total_profit)
     assert total_profit > 0
+
+def test_cp_with_starting():
+    profits = np.array([[1, 1, 2, 3],
+                        [1, 1, 4, 5],
+                        [2, 4, 2, 6],
+                        [3, 5, 6, 3]])
+    weights = [1, 3, 2, 2]
+    capacities = [5, 5, 3]
+    starting_assignment = np.array([[0, 0, 0],
+                                    [0, 1, 0],
+                                    [0, 0, 0],
+                                    [1, 0, 0]])
+    solution = constructive_procedure(capacities, weights, profits,
+                                      starting_assignment=starting_assignment)
+    print(solution)
+    total_profit = total_profit_qmkp(profits, solution)
+    print(total_profit)
+    assert np.all(np.shape(solution) == (len(weights), len(capacities))) and total_profit > 0
