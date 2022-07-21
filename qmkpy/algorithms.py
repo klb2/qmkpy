@@ -1,4 +1,4 @@
-from typing import Iterable, Any
+from typing import Iterable, Any, Optional
 
 import numpy as np
 
@@ -9,7 +9,7 @@ from .checks import is_binary
 def constructive_procedure(profits: np.array,
                            weights: Iterable[float],
                            capacities: Iterable[float],
-                           starting_assignment: np.array = None):
+                           starting_assignment: np.array = None) -> np.array:
     """Algorithm 1
 
     """
@@ -55,28 +55,40 @@ def constructive_procedure(profits: np.array,
     #assert len(j_prime) == 0
     return solution
 
-def fcs_procedure(capacities: Iterable[float],
+def fcs_procedure(profits: np.array,
                   weights: Iterable[float],
-                  profits: np.array):
+                  capacities: Iterable[float],
+                  alpha: Optional[float] = None,
+                  len_history: int = 50) -> np.array:
     """
     (Based on Algorithm 2 of (Aider, Gacem, Hifi, 2022).)
 
     Parameters
     ----------
-    capacities : list of int
-        Capacities of the knapsacks. The number of knapsacks :math:`M` is
-        determined as `M=len(c)`.
+    profits : array of size N x N
+        Symmetric matrix that contains the (joint) profit values :math:`p_{ij}`
 
     weights : list
         List of weights :math:`w_i` of the :math:`N` items that can be
         assigned.
 
-    profits : array of size :math:`N \\times N`
-        Symmetric matrix that contains the (joint) profit values :math:`p_{ij}`
+    capacities : list of int
+        Capacities of the knapsacks. The number of knapsacks :math:`M` is
+        determined as `M=len(c)`.
+
+    alpha : float, optional
+        Float between 0 and 1 that indicates the ratio of assignments that
+        should be dropped in an iteration. If not provided, a uniformly random
+        value is chosen.
+
+    len_history : int, optional
+        Number of consecutive iterations without any improvement before the
+        algorithm terminates.
+
 
     Returns
     -------
-    x_opt : 
+    x_opt : array of size N x K
         Found solution to the QMKP
     """
     capacities = np.array(capacities)
@@ -86,10 +98,13 @@ def fcs_procedure(capacities: Iterable[float],
     num_ks = len(capacities)
     current_solution = constructive_procedure(profits, weights, capacities)
     solution_best = np.copy(current_solution)
-    alpha = np.random.rand()
+    if alpha is None:
+        alpha = np.random.rand()
+    if not 0 <= alpha <= 1:
+        raise ValueError("Alpha needs to be in the interval [0, 1]")
     #profit_history = []
     no_improvement = 0
-    while no_improvement < 50:
+    while no_improvement < len_history:
         s1 = np.where(np.any(current_solution, axis=1))[0]
         _dropped_items = np.random.choice(s1, size=int(len(s1)*alpha),
                                           replace=False)
