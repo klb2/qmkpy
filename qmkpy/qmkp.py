@@ -26,8 +26,12 @@ class QMKProblem:
             algorithm = self.algorithm
         if args is None:
             args = self.args
+        if args is None:
+            args = ()
         assignments = algorithm(self.profits, self.weights, self.capacities,
                                 *args)
+        profit = total_profit_qmkp(self.profits, assignments)
+        return assignments, profit
 
 def total_profit_qmkp(profits: np.array, assignments: np.array) -> float:
     """
