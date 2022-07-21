@@ -29,12 +29,6 @@ class QMKProblem:
 
     args : tuple, optional
         Optional tuple of additional arguments that are passed to `algorithm`.
-
-
-    Methods
-    -------
-    solve(algorithm=None, args=None)
-        Solves the QMKP using `algorithm` with the additional arguments `args`.
     """
 
     def __init__(self,
@@ -54,6 +48,10 @@ class QMKProblem:
     
     def solve(self, algorithm: Optional[Callable] = None,
               args: Optional[tuple] = None) -> Tuple[np.array, float]:
+        """Solve the QMKP
+
+        """
+
         if algorithm is None:
             algorithm = self.algorithm
         if args is None:
