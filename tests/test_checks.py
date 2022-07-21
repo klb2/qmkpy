@@ -31,10 +31,10 @@ def test_is_feasible_solution_pass(assignments):
                         [3, 5, 6, 3]])
     weights = [1, 3, 2, 2]
     capacities = [5, 5, 3]
-    is_feasible = checks.is_feasible_solution(assignments,
-                                              capacities=capacities,
+    is_feasible = checks.is_feasible_solution(capacities=capacities,
                                               weights=weights,
-                                              profits=profits)
+                                              profits=profits,
+                                              assignments=assignments)
     assert is_feasible == True
 
 @pytest.mark.parametrize("assignments",
@@ -53,10 +53,10 @@ def test_is_feasible_solution_fail(assignments):
                         [3, 5, 6, 3]])
     weights = [1, 3, 2, 2]
     capacities = [5, 5, 3]
-    is_feasible = checks.is_feasible_solution(assignments,
-                                              capacities=capacities,
+    is_feasible = checks.is_feasible_solution(capacities=capacities,
                                               weights=weights,
-                                              profits=profits)
+                                              profits=profits,
+                                              assignments=assignments)
     assert is_feasible == False
 
 @pytest.mark.parametrize("assignments",
@@ -76,10 +76,10 @@ def test_is_feasible_solution_raise(assignments):
     weights = [1, 3, 2, 2]
     capacities = [5, 5, 3]
     with pytest.raises(ValueError) as e_info:
-        is_feasible = checks.is_feasible_solution(assignments,
-                                                  capacities=capacities,
+        is_feasible = checks.is_feasible_solution(capacities=capacities,
                                                   weights=weights,
                                                   profits=profits,
+                                                  assignments=assignments,
                                                   raise_error=True)
 
 

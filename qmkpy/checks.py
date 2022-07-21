@@ -31,8 +31,10 @@ def is_binary(x):
     x = np.array(x)
     return ((x == 0) | (x == 1)).all()
 
-def is_feasible_solution(assignments: np.array, capacities: Iterable[float],
-                         weights: Iterable[float], profits: np.array,
+def is_feasible_solution(profits: np.array,
+                         weights: Iterable[float], 
+                         capacities: Iterable[float],
+                         assignments: np.array,
                          raise_error: bool = False):
     assignments = np.array(assignments)
     num_items = len(weights)

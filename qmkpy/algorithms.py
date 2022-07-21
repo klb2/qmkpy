@@ -5,9 +5,9 @@ import numpy as np
 from .checks import is_binary
 
 
-def constructive_procedure(capacities: Iterable[float],
+def constructive_procedure(profits: np.array,
                            weights: Iterable[float],
-                           profits: np.array,
+                           capacities: Iterable[float],
                            starting_assignment: np.array = None):
     """Algorithm 1
 

@@ -1,15 +1,33 @@
-from typing import Iterable, Any
+from typing import Iterable, Any, Union, Callable, Optional, Tuple
 
 import numpy as np
 
-from .checks import is_binary
+from . import checks
 
 class QMKProblem:
     def __init__(self, capacities: Iterable[float], weights: Iterable[float],
-                 profits: np.array):
-        pass
+                 profits: Union[np.array, Iterable[Iterable]],
+                 algorithm: Optional[Callable] = None,
+                 args: Optional[tuple] = None):
+        profits = np.array(profits)
+        checks.check_dimensions(profits, weights)
+        self.profits = profits
+        self.weights = weights
+        self.capacities = capacities
 
-def total_profit_qmkp(profits: np.array, assignments: np.array):
+        self.algorithm = algorithm
+        self.args = args
+    
+    def solve(self, algorithm: Optional[Callable] = None,
+              args: Optional[tuple] = None) -> Tuple[np.array, float]:
+        if algorithm is None:
+            algorithm = self.algorithm
+        if args is None:
+            args = self.args
+        assignments = algorithm(self.profits, self.weights, self.capacities,
+                                *args)
+
+def total_profit_qmkp(profits: np.array, assignments: np.array) -> float:
     """
     Parameters
     ----------
