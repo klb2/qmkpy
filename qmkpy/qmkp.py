@@ -5,6 +5,38 @@ import numpy as np
 from . import checks
 
 class QMKProblem:
+    """Base class to represent a quadratic multiple knapsack problem.
+
+    This class defines a standard QMKP with :math:`N` items and :math:`K`
+    knapsacks.
+
+    Attributes
+    ----------
+    profits : array of size N x N
+        Symmetric matrix that contains the (joint) profit values :math:`p_{ij}`
+
+    weights : list
+        List of weights :math:`w_i` of the :math:`N` items that can be
+        assigned.
+
+    capacities : list of int
+        Capacities of the knapsacks. The number of knapsacks :math:`K` is
+        determined as `K=len(capacities)`.
+
+    algorithm : callable
+        Function that is used to solve the QMKP. It needs to follow the
+        argument order `algorithm(profits, weights, capacities, ...)`.
+
+    args : tuple, optional
+        Optional tuple of additional arguments that are passed to `algorithm`.
+
+
+    Methods
+    -------
+    solve(algorithm=None, args=None)
+        Solves the QMKP using `algorithm` with the additional arguments `args`.
+    """
+
     def __init__(self,
                  profits: Union[np.array, Iterable[Iterable]],
                  weights: Iterable[float],
@@ -44,6 +76,7 @@ def total_profit_qmkp(profits: np.array, assignments: np.array) -> float:
         Matrix with binary elements where column :math:`j` corresponds to the
         assignments of the :math:`N` items to knapsack :math:`j`.
     """
+
     if not checks.is_binary(assignments):
         raise ValueError("The assignments matrix needs to be binary.")
     _profit_matrix = assignments.T @ profits @ assignments
@@ -51,11 +84,15 @@ def total_profit_qmkp(profits: np.array, assignments: np.array) -> float:
     ks_profits = _double_main_diag + np.diag(_profit_matrix)
     return np.sum(ks_profits)/2
 
-def value_density(profits: np.array, weights: Iterable[float],
-                  sel_objects: Iterable[float], reduced_output: bool = False):
+def value_density(profits: np.array,
+                  weights: Iterable[float],
+                  sel_objects: Iterable[float],
+                  reduced_output: bool = False) -> Iterable[float]:
     """
-    This function will always add object :math:`i` to the selected objects for
-    the value of object :math:`i`.
+    Calculate the value density given a set of selected objects.
+
+    Note that this function will always add object :math:`i` to the selected
+    objects for the value of object :math:`i`.
 
     Parameters
     ----------
@@ -68,10 +105,19 @@ def value_density(profits: np.array, weights: Iterable[float],
     sel_objects : list
         Set of selected objects
 
-    reduced_output: bool, optional
+    reduced_output : bool, optional
         If set to `True` only the value density values of the selected objects
         are returned.
+
+    Returns
+    -------
+    densities : list
+        List that contains the value densities of the objects. The length is
+        equal to :math:`N`, if `reduced_output` is `False`.
+        If `reduced_output` is `True`, the return has length
+        `len(densities)==len(sel_objects)`.
     """
+
     num_objects = len(weights)
     _sel_objects = np.zeros(num_objects)
     _sel_objects[sel_objects] = 1
