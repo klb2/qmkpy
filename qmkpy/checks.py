@@ -1,9 +1,9 @@
-from typing import Iterable, Any, Union
+from typing import Iterable, Any, Union, NoReturn, Optional
 
 import numpy as np
 
 def check_dimensions(profits: np.array,
-                     weights: Union[Iterable[float], None] = None) -> None:
+                     weights: Optional[Iterable[float]] = None) -> NoReturn:
     """
     Simple check whether the dimensions of the parameters match.
 
