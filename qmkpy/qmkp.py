@@ -5,8 +5,10 @@ import numpy as np
 from . import checks
 
 class QMKProblem:
-    def __init__(self, capacities: Iterable[float], weights: Iterable[float],
+    def __init__(self,
                  profits: Union[np.array, Iterable[Iterable]],
+                 weights: Iterable[float],
+                 capacities: Iterable[float], 
                  algorithm: Optional[Callable] = None,
                  args: Optional[tuple] = None):
         profits = np.array(profits)
@@ -38,15 +40,15 @@ def total_profit_qmkp(profits: np.array, assignments: np.array) -> float:
         Matrix with binary elements where column :math:`j` corresponds to the
         assignments of the :math:`N` items to knapsack :math:`j`.
     """
-    if not is_binary(assignments):
+    if not checks.is_binary(assignments):
         raise ValueError("The assignments matrix needs to be binary.")
     _profit_matrix = assignments.T @ profits @ assignments
     _double_main_diag = assignments.T @ np.diag(profits)
     ks_profits = _double_main_diag + np.diag(_profit_matrix)
     return np.sum(ks_profits)/2
 
-def value_density(profits: np.array, sel_objects: Iterable[float],
-                  weights: Iterable[float], reduced_output: bool = False):
+def value_density(profits: np.array, weights: Iterable[float],
+                  sel_objects: Iterable[float], reduced_output: bool = False):
     """
     This function will always add object :math:`i` to the selected objects for
     the value of object :math:`i`.
@@ -56,11 +58,11 @@ def value_density(profits: np.array, sel_objects: Iterable[float],
     profits : array (N x N)
         Symmetric matrix containing the profits :math:`p_{ij}`
 
-    sel_objects : list
-        Set of selected objects
-
     weights : list
         Weights of the objects
+
+    sel_objects : list
+        Set of selected objects
 
     reduced_output: bool, optional
         If set to `True` only the value density values of the selected objects

@@ -2,6 +2,7 @@ from typing import Iterable, Any
 
 import numpy as np
 
+from .qmkp import value_density, total_profit_qmkp
 from .checks import is_binary
 
 
@@ -33,7 +34,7 @@ def constructive_procedure(profits: np.array,
     idx_c_bar = np.argsort(capacities)[::-1]
     c_bar = capacities[idx_c_bar]
 
-    densities = value_density(profits, j_prime, weights, reduced_output=True)
+    densities = value_density(profits, weights, j_prime, reduced_output=True)
     idx_sort_objects = np.argsort(densities)[::-1]
 
     # 2. Iterative Step
@@ -83,7 +84,7 @@ def fcs_procedure(capacities: Iterable[float],
     # 1. Initialization
     num_items = len(weights)
     num_ks = len(capacities)
-    current_solution = constructive_procedure(capacities, weights, profits)
+    current_solution = constructive_procedure(profits, weights, capacities)
     solution_best = np.copy(current_solution)
     alpha = np.random.rand()
     #profit_history = []
@@ -94,7 +95,7 @@ def fcs_procedure(capacities: Iterable[float],
                                           replace=False)
         start_assign = np.copy(current_solution)
         start_assign[_dropped_items, :] = 0
-        s_prime = constructive_procedure(capacities, weights, profits,
+        s_prime = constructive_procedure(profits, weights, capacities,
                                          starting_assignment=start_assign)
         _profit_best = total_profit_qmkp(profits, solution_best)
         _profit_prime = total_profit_qmkp(profits, s_prime)
@@ -165,5 +166,5 @@ if __name__ == "__main__":
     capacities = [1, .3, 2]
     weights = [1, 4, 2.2]
     profits = np.array([[0, 2, 1], [2, 0, .2], [1, .2, 0]])
-    solution = constructive_procedure(capacities, weights, profits)
+    solution = constructive_procedure(profits, weights, capacities)
     #solve_qmkp(capacities, weights, profits)
