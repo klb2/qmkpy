@@ -19,6 +19,19 @@ def test_solver_consistency():
     pr_solution, profit = problem.solve()
     assert np.all(pr_solution == cp_solution) and profit > 0
 
+def test_parameter_consistency():
+    profits = np.array([[1, 1, 2, 3],
+                        [1, 1, 4, 5],
+                        [2, 4, 2, 6],
+                        [3, 5, 6, 3]])
+    weights = [1, 2, 3, 3]
+    capacities = [5, 5, 3]
+    cp_solution = constructive_procedure(profits, weights, capacities)
+    problem = QMKProblem(profits, weights, capacities,
+                         algorithm=constructive_procedure)
+    pr_solution, profit = problem.solve()
+    assert np.all(problem.capacities == [5, 5, 3])
+
 def test_solver_set_later():
     num_elements = 20
     num_knapsacks = 5
