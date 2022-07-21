@@ -1,6 +1,31 @@
-from typing import Iterable, Any
+from typing import Iterable, Any, Union
 
 import numpy as np
+
+def check_dimensions(profits: np.array,
+                     weights: Union[Iterable[float], None] = None) -> None:
+    """
+    Simple check whether the dimensions of the parameters match.
+
+    Parameters
+    ----------
+    profits : array (N x N)
+        Symmetric matrix containing the profits :math:`p_{ij}`
+
+    weights : list of length N, optional
+        List which contains the weights of the :math:`N` items.
+
+    Raises
+    ------
+    This function raises a ValueError, if there is a mismatch
+    """
+    _row_p, _cols_p = np.shape(profits)
+    if not _row_p == _cols_p:
+        raise ValueError("The profit matrix is not square")
+    if weights is not None:
+        num_items = len(weights)
+        if not num_items == _row_p:
+            raise ValueError("The number of items does not match the number of profits.")
 
 def is_binary(x):
     x = np.array(x)

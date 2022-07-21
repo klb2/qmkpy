@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-import util
+from qmkpy import checks
 
 @pytest.mark.parametrize("array,expected",
                          (([0, 1, 0], True), ([1, 1, 1, 1], True),
@@ -15,7 +15,7 @@ import util
                           (np.random.rand(10, 10), False),
                          ))
 def test_is_binary(array, expected):
-    _isbinary = util.is_binary(array)
+    _isbinary = checks.is_binary(array)
     assert _isbinary == expected
 
 @pytest.mark.parametrize("assignments",
@@ -31,10 +31,10 @@ def test_is_feasible_solution_pass(assignments):
                         [3, 5, 6, 3]])
     weights = [1, 3, 2, 2]
     capacities = [5, 5, 3]
-    is_feasible = util.is_feasible_solution(assignments,
-                                            capacities=capacities,
-                                            weights=weights,
-                                            profits=profits)
+    is_feasible = checks.is_feasible_solution(assignments,
+                                              capacities=capacities,
+                                              weights=weights,
+                                              profits=profits)
     assert is_feasible == True
 
 @pytest.mark.parametrize("assignments",
@@ -53,10 +53,10 @@ def test_is_feasible_solution_fail(assignments):
                         [3, 5, 6, 3]])
     weights = [1, 3, 2, 2]
     capacities = [5, 5, 3]
-    is_feasible = util.is_feasible_solution(assignments,
-                                            capacities=capacities,
-                                            weights=weights,
-                                            profits=profits)
+    is_feasible = checks.is_feasible_solution(assignments,
+                                              capacities=capacities,
+                                              weights=weights,
+                                              profits=profits)
     assert is_feasible == False
 
 @pytest.mark.parametrize("assignments",
@@ -76,8 +76,31 @@ def test_is_feasible_solution_raise(assignments):
     weights = [1, 3, 2, 2]
     capacities = [5, 5, 3]
     with pytest.raises(ValueError) as e_info:
-        is_feasible = util.is_feasible_solution(assignments,
-                                                capacities=capacities,
-                                                weights=weights,
-                                                profits=profits,
-                                                raise_error=True)
+        is_feasible = checks.is_feasible_solution(assignments,
+                                                  capacities=capacities,
+                                                  weights=weights,
+                                                  profits=profits,
+                                                  raise_error=True)
+
+
+@pytest.mark.parametrize("profits,weights",
+                         (([[1, 0, 1], [0, 2, 3], [1, 3, 5]], [1, 2, 3]),
+                          ([[1, 1], [3, 2]], [4, 1]),
+                          ([[-2, -2], [-5, 2]], [-2, 0]),
+                          ([[2, -2], [5, 2]], None),
+                         ))
+def test_dimension_check(profits, weights):
+    profits = np.array(profits)
+    checks.check_dimensions(profits, weights)
+
+@pytest.mark.parametrize("profits,weights",
+                         (([[1, 0, 1], [0, 2, 3]], [1, 2, 3]),
+                          ([[1, 1], [3, 2]], [4, 1, 2]),
+                          ([[2, 0], [-5, 2], [5, 2]], None),
+                          ([[-2, -2], [-5, 2], [5, 2]], [-2, 0]),
+                          ([[-2, -2], [-5, 2], [5, 2]], [-2, 0, 3]),
+                         ))
+def test_dimension_check_fail(profits, weights):
+    profits = np.array(profits)
+    with pytest.raises(ValueError) as e_info:
+        checks.check_dimensions(profits, weights)
