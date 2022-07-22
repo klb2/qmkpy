@@ -175,3 +175,15 @@ def random_assignment(profits: np.array, weights: Iterable[float],
     capacities = np.array(capacities)
     num_items = len(weights)
     num_ks = len(capacities)
+    assignments = np.zeros((num_items, num_ks))
+    for _item in np.random.permutation(range(num_items)):
+        avail_ks = np.argwhere(capacities >= weights[_item])
+        avail_ks = np.ravel(avail_ks)
+        if len(avail_ks) == 0:
+            continue
+        if np.random.rand() < 1./len(avail_ks):
+            continue
+        _ks = np.random.choice(avail_ks)
+        assignments[_item, _ks] = 1
+        capacities[_ks] = capacities[_ks] - weights[_item]
+    return assignments
