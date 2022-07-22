@@ -4,21 +4,29 @@ import numpy as np
 
 def check_dimensions(profits: np.array,
                      weights: Optional[Iterable[float]] = None) -> NoReturn:
-    """
-    Simple check whether the dimensions of the parameters match.
+    """Simple check whether the dimensions of the parameters match.
+
+    This function checks that
+
+    1. The profit matrix is quadratic of size :math:`N`,
+    2. The number of items is equal to :math:`N`, i.e., ``len(weights)==N``.
+
 
     Parameters
     ----------
-    profits : array (N x N)
-        Symmetric matrix containing the profits :math:`p_{ij}`
+    profits : np.array
+        Symmetric matrix of size :math:`N\\times N` containing the profits
+        :math:`p_{ij}`.
 
-    weights : list of length N, optional
+    weights : list of float, optional
         List which contains the weights of the :math:`N` items.
 
     Raises
     ------
-    This function raises a ValueError, if there is a mismatch
+    ValueError
+        This function raises a :class:`ValueError`, if there is a mismatch.
     """
+
     _row_p, _cols_p = np.shape(profits)
     if not _row_p == _cols_p:
         raise ValueError("The profit matrix is not square")
@@ -27,7 +35,23 @@ def check_dimensions(profits: np.array,
         if not num_items == _row_p:
             raise ValueError("The number of items does not match the number of profits.")
 
-def is_binary(x):
+def is_binary(x: Iterable[float]) -> bool:
+    """Check whether a provided array is binary
+
+    This function checks that all elements of the input are either 0 or 1.
+
+    Parameters
+    ----------
+    x : Iterable
+        Array of numbers
+
+    Returns
+    -------
+    binary : bool
+        Returns ``True`` when the array ``x`` is binary and ``False``
+        otherwise.
+    """
+
     x = np.array(x)
     return ((x == 0) | (x == 1)).all()
 

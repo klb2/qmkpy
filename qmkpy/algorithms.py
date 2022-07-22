@@ -10,9 +10,43 @@ def constructive_procedure(profits: np.array,
                            weights: Iterable[float],
                            capacities: Iterable[float],
                            starting_assignment: np.array = None) -> np.array:
-    """Algorithm 1
+    """Constructive procedure that completes a starting assignment
 
+    This constructive procedure is based on Algorithm 1 in (Aider, Gacem, Hifi,
+    2022). It is a greedy algorithm that completes a partial solution of the
+    QMKP.
+
+
+    Parameters
+    ----------
+    profits : np.array
+        Symmetric matrix of size :math:`N\\times N` that contains the (joint)
+        profit values :math:`p_{ij}`.
+
+    weights : list of float
+        List of weights :math:`w_i` of the :math:`N` items that can be
+        assigned.
+
+    capacities : list of float
+        Capacities of the knapsacks. The number of knapsacks :math:`K` is
+        determined as ``K=len(capacities)``.
+
+    starting_assignments : np.array, optional
+        Binary matrix of size :math:`N\\times K` which represents existing
+        starting assignments of items to knapsacks. If :math:`a_{ij}=1`,
+        element :math:`i` is assigned to knapsack :math:`j`. These assignments
+        are not modified and will only be completed.
+        If it is `None`, no existing assignment is assumed.
+
+    
+    Returns
+    -------
+    assignments : np.array
+        Binary matrix of size :math:`N\\times K` which represents the final
+        assignments of items to knapsacks. If :math:`a_{ij}=1`, element
+        :math:`i` is assigned to knapsack :math:`j`.
     """
+
     capacities = np.array(capacities)
     num_items = len(weights)
     num_ks = len(capacities)
@@ -55,26 +89,31 @@ def constructive_procedure(profits: np.array,
     #assert len(j_prime) == 0
     return solution
 
+
 def fcs_procedure(profits: np.array,
                   weights: Iterable[float],
                   capacities: Iterable[float],
                   alpha: Optional[float] = None,
                   len_history: int = 50) -> np.array:
-    """
-    (Based on Algorithm 2 of (Aider, Gacem, Hifi, 2022).)
+    """Implementation of the fix and complete solution (FCS) procedure
+
+    This fix and complete solution (FCS) procedure is based on Algorithm 2 from
+    (Aider, Gacem, Hifi, 2022). It is basically a genetic algorithm wrapper
+    around the constructive procedure :meth:`constructive_procedure`.
 
     Parameters
     ----------
-    profits : array of size N x N
-        Symmetric matrix that contains the (joint) profit values :math:`p_{ij}`
+    profits : np.array
+        Symmetric matrix of size :math:`N\\times N` that contains the (joint)
+        profit values :math:`p_{ij}`.
 
-    weights : list
+    weights : list of float
         List of weights :math:`w_i` of the :math:`N` items that can be
         assigned.
 
-    capacities : list of int
-        Capacities of the knapsacks. The number of knapsacks :math:`M` is
-        determined as `M=len(c)`.
+    capacities : list of float
+        Capacities of the knapsacks. The number of knapsacks :math:`K` is
+        determined as ``K=len(capacities)``.
 
     alpha : float, optional
         Float between 0 and 1 that indicates the ratio of assignments that
@@ -88,9 +127,12 @@ def fcs_procedure(profits: np.array,
 
     Returns
     -------
-    x_opt : array of size N x K
-        Found solution to the QMKP
+    assignments : np.array
+        Binary matrix of size :math:`N\\times K` which represents the final
+        assignments of items to knapsacks. If :math:`a_{ij}=1`, element
+        :math:`i` is assigned to knapsack :math:`j`.
     """
+
     capacities = np.array(capacities)
 
     # 1. Initialization
@@ -122,64 +164,3 @@ def fcs_procedure(profits: np.array,
         if np.random.rand() > 0.5:
             current_solution = solution_best
     return solution_best
-
-def efcs_procedure(capacities: Iterable[float],
-                   weights: Iterable[float],
-                   profits: np.array):
-    """
-    """
-    capacities = np.array(capacities)
-
-    # 1. Initialization
-    num_items = len(weights)
-    num_ks = len(capacities)
-    current_solution = fcs_procedure(capacities, weights, profits)
-    solution_best = np.copy(current_solution)
-
-    tabu_list = set()
-
-    #2. Iterative Step
-    no_improvement = 0
-    while no_improvement < 50:
-        pass
-
-    return
-
-
-def solve_qmkp(capacities: Iterable[float], weights: Iterable[float],
-               profits: np.array):
-    """
-    (Based on Algorithm 4 of (Aider, Gacem, Hifi, 2022).)
-
-    Parameters
-    ----------
-    capacities : list of int
-        Capacities of the knapsacks. The number of knapsacks :math:`M` is
-        determined as `M=len(c)`.
-
-    weights : list
-        List of weights :math:`w_i` of the :math:`N` items that can be
-        assigned.
-
-    profits : array of size :math:`N \\times N`
-        Symmetric matrix that contains the (joint) profit values :math:`p_{ij}`
-
-    Returns
-    -------
-    x_opt : 
-        Found solution to the QMKP
-    """
-    # 1. Initialization Step (EFCS)
-    s_opt = efcs_procedure() #TODO
-
-    # 2. Iterative Steps
-    while True:
-        s_prime = efcs_procedure()
-    return
-
-if __name__ == "__main__":
-    capacities = [1, .3, 2]
-    weights = [1, 4, 2.2]
-    profits = np.array([[0, 2, 1], [2, 0, .2], [1, .2, 0]])
-    solution = constructive_procedure(profits, weights, capacities)
-    #solve_qmkp(capacities, weights, profits)

@@ -15,15 +15,15 @@ class QMKProblem:
     profits : array of size N x N
         Symmetric matrix that contains the (joint) profit values :math:`p_{ij}`
 
-    weights : list
+    weights : list of length N
         List of weights :math:`w_i` of the :math:`N` items that can be
         assigned.
 
-    capacities : list of int
+    capacities : list of length K
         Capacities of the knapsacks. The number of knapsacks :math:`K` is
         determined as `K=len(capacities)`.
 
-    algorithm : callable
+    algorithm : Callable, optional
         Function that is used to solve the QMKP. It needs to follow the
         argument order `algorithm(profits, weights, capacities, ...)`.
 
@@ -50,6 +50,31 @@ class QMKProblem:
               args: Optional[tuple] = None) -> Tuple[np.array, float]:
         """Solve the QMKP
 
+        Solve the QMKP using `algorithm`. This function both returns the
+        optimal assignment and the total resulting profit.
+
+        Parameters
+        ----------
+        algorithm : Callable, optional
+            Function that is used to solve the QMKP. It needs to follow the
+            argument order `algorithm(profits, weights, capacities, ...)`.
+            If it is `None`, the object attribute `self.algorithm` is used.
+
+        args : tuple, optional
+            Optional tuple of additional arguments that are passed to
+            `algorithm`. If it is `None`, the object attribute `self.args` is
+            used.
+
+
+        Returns
+        -------
+        assignments : np.array (N x K)
+            Found assignments which are represented by a :math:`N\\times K`
+            binary matrix where :math:`a_{ij}=1` means that item :math:`i` is
+            assigned to knapsack :math:`j`.
+
+        total_profit : float
+            Final total profit for the found solution.
         """
 
         if algorithm is None:
