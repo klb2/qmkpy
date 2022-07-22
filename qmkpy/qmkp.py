@@ -3,6 +3,7 @@ from typing import Iterable, Any, Union, Callable, Optional, Tuple
 import numpy as np
 
 from . import checks
+from .util import value_density
 
 class QMKProblem:
     """Base class to represent a quadratic multiple knapsack problem.
@@ -106,49 +107,3 @@ def total_profit_qmkp(profits: np.array, assignments: np.array) -> float:
     _double_main_diag = assignments.T @ np.diag(profits)
     ks_profits = _double_main_diag + np.diag(_profit_matrix)
     return np.sum(ks_profits)/2
-
-def value_density(profits: np.array,
-                  weights: Iterable[float],
-                  sel_objects: Iterable[float],
-                  reduced_output: bool = False) -> Iterable[float]:
-    """
-    Calculate the value density given a set of selected objects.
-
-    Note that this function will always add object :math:`i` to the selected
-    objects for the value of object :math:`i`.
-
-    Parameters
-    ----------
-    profits : array (N x N)
-        Symmetric matrix containing the profits :math:`p_{ij}`
-
-    weights : list
-        Weights of the objects
-
-    sel_objects : list
-        Set of selected objects
-
-    reduced_output : bool, optional
-        If set to `True` only the value density values of the selected objects
-        are returned.
-
-    Returns
-    -------
-    densities : list
-        List that contains the value densities of the objects. The length is
-        equal to :math:`N`, if `reduced_output` is `False`.
-        If `reduced_output` is `True`, the return has length
-        `len(densities)==len(sel_objects)`.
-    """
-
-    num_objects = len(weights)
-    _sel_objects = np.zeros(num_objects)
-    _sel_objects[sel_objects] = 1
-    _sel_objects = np.reshape(_sel_objects, (num_objects, 1))
-    sel_objects_matrix = np.tile(_sel_objects, (1, num_objects))
-    np.fill_diagonal(sel_objects_matrix, 1)
-    contributions = np.diag(profits @ sel_objects_matrix)
-    densities = contributions/weights
-    if reduced_output:
-        densities = densities[sel_objects]
-    return densities

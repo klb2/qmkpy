@@ -2,6 +2,7 @@ import numpy as np
 import pytest
 
 from qmkpy import value_density, total_profit_qmkp
+from qmkpy.util import chromosome_from_assignment
 from qmkpy import checks
 
 
@@ -54,3 +55,12 @@ def test_profit2():
     _objective = total_profit_qmkp(profits, assignments)
     print(_objective)
     assert expected == _objective
+
+@pytest.mark.parametrize("assignments,expected",
+                         ((np.array([[0, 1, 0], [1, 0, 0], [1, 0, 0], [0, 0, 1]]), [1, 0, 0, 2]),
+                          (np.array([[0, 0], [0, 1], [1, 0], [0, 0]]), [-1, 1, 0, -1]),
+                          (np.array([[0, 0, 1], [0, 1, 0], [0, 0, 0], [1, 0, 0]]), [2, 1, -1, 0]),
+                         ))
+def test_chromosome(assignments, expected):
+    chromosome = chromosome_from_assignment(assignments)
+    assert np.all(chromosome == expected)
