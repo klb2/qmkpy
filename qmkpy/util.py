@@ -14,11 +14,13 @@ def value_density(profits: np.array,
 
     Parameters
     ----------
-    profits : array (N x N)
-        Symmetric matrix containing the profits :math:`p_{ij}`
+    profits : np.array
+        Symmetric matrix of size :math:`N\\times N` that contains the (joint)
+        profit values :math:`p_{ij}`.
 
-    weights : list
-        Weights of the objects
+    weights : list of float
+        List of weights :math:`w_i` of the :math:`N` items that can be
+        assigned.
 
     sel_objects : list
         Set of selected objects
@@ -72,4 +74,16 @@ def chromosome_from_assignment(assignments: np.array) -> Iterable[int]:
     chromosome = -np.ones(len(assignments))
     _assigned_items = np.argwhere(assignments == 1)
     chromosome[_assigned_items[:, 0]] = _assigned_items[:, 1]
-    return chromosome
+    return chromosome.astype(int)
+
+def assignment_from_chromosome(chromosome: Iterable[int], num_ks: int) -> np.array:
+    """Return the assignment matrix from a chromosome
+
+    TODO
+    """
+    chromosome = np.array(chromosome, dtype=int)
+    num_items = len(chromosome)
+    assignments = np.zeros((num_items, num_ks))
+    _assigned_items = np.argwhere(chromosome >= 0)
+    assignments[_assigned_items, chromosome[_assigned_items]] = 1
+    return assignments

@@ -98,8 +98,10 @@ def fcs_procedure(profits: np.array,
     """Implementation of the fix and complete solution (FCS) procedure
 
     This fix and complete solution (FCS) procedure is based on Algorithm 2 from
-    (Aider, Gacem, Hifi, 2022). It is basically a genetic algorithm wrapper
-    around the constructive procedure :meth:`constructive_procedure`.
+    (Aider, Gacem, Hifi, 2022). It is basically a stochastic hill-climber
+    wrapper around the constructive procedure :meth:`constructive_procedure`
+    (also see (Hiley, Julstrom, 2006).
+
 
     Parameters
     ----------
@@ -123,7 +125,6 @@ def fcs_procedure(profits: np.array,
     len_history : int, optional
         Number of consecutive iterations without any improvement before the
         algorithm terminates.
-
 
     Returns
     -------
@@ -164,3 +165,13 @@ def fcs_procedure(profits: np.array,
         if np.random.rand() > 0.5:
             current_solution = solution_best
     return solution_best
+
+
+def random_assignment(profits: np.array, weights: Iterable[float],
+                      capacities: Iterable[float]) -> np.array:
+    """TODO
+    """
+
+    capacities = np.array(capacities)
+    num_items = len(weights)
+    num_ks = len(capacities)
