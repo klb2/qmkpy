@@ -12,7 +12,7 @@ Welcome to QMKPy's documentation!
 
    installation.rst
    examples.rst
-   modules.rst
+   qmkpy.rst
 
 
 

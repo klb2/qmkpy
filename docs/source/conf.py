@@ -20,7 +20,7 @@ import qmkpy
 
 project = 'QMKPy'
 copyright = '2022, Karl-Ludwig Besser'
-author = qmkpy.__author__
+author = "Karl-Ludwig Besser"
 
 # The full version, including alpha/beta/rc tags
 release = qmkpy.__version__
@@ -34,7 +34,12 @@ release = qmkpy.__version__
 extensions = [
         "sphinx.ext.autodoc",
         "sphinx.ext.napoleon",
+        "sphinx.ext.intersphinx",
 ]
+napoleon_numpy_docstring = True
+napoleon_use_param = True
+napoleon_preprocess_types = True
+napoleon_attr_annotations = True
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
