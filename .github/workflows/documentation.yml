@@ -29,7 +29,7 @@ jobs:
       - name: Building documentation
         working-directory: docs
         run: |
-          sphinx-apidoc -e -o source ../qmkpy
+          #sphinx-apidoc -e -T -o source ../qmkpy
           make html
       - name: Saving documentation HTML
         uses: actions/upload-artifact@v3
