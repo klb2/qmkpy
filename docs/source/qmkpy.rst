@@ -10,6 +10,7 @@ Submodules
    qmkpy.algorithms
    qmkpy.checks
    qmkpy.qmkp
+   qmkpy.util
 
 Module contents
 ---------------
