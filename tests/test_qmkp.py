@@ -32,6 +32,18 @@ def test_parameter_consistency():
     pr_solution, profit = problem.solve()
     assert np.all(problem.capacities == [5, 5, 3])
 
+def test_parameter_writeable():
+    profits = np.array([[1, 1, 2, 3],
+                        [1, 1, 4, 5],
+                        [2, 4, 2, 6],
+                        [3, 5, 6, 3]])
+    weights = [1, 2, 3, 3]
+    capacities = [5, 5, 3]
+    problem = QMKProblem(profits, weights, capacities)
+    with pytest.raises(ValueError):
+        problem.capacities[0] = 2
+    assert np.all(problem.capacities == [5, 5, 3])
+
 def test_solver_set_later():
     num_elements = 20
     num_knapsacks = 5

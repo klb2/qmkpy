@@ -41,8 +41,12 @@ class QMKProblem:
         profits = np.array(profits)
         checks.check_dimensions(profits, weights)
         self.profits = profits
-        self.weights = weights
-        self.capacities = capacities
+        self.weights = np.array(weights)
+        self.capacities = np.array(capacities)
+
+        self.profits.setflags(write=False)
+        self.weights.setflags(write=False)
+        self.capacities.setflags(write=False)
 
         self.algorithm = algorithm
         self.args = args
