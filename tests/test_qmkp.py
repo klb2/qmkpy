@@ -1,3 +1,7 @@
+#import tempfile
+import os.path
+import pathlib
+
 import numpy as np
 import pytest
 
@@ -82,3 +86,45 @@ def test_solver_with_args_set_later():
     problem.args = (.5,)
     pr_solution, profit = problem.solve()
     assert checks.is_feasible_solution(pr_solution, profits, weights, capacities)
+
+@pytest.mark.parametrize("strategy", ("numpy", "pickle"))
+def test_qmkp_save(tmp_path,strategy):
+    num_elements = 10
+    num_knapsacks = 3
+    profits = np.random.randint(0, 8, size=(num_elements, num_elements))
+    profits = profits @ profits.T
+    weights = np.random.randint(1, 5, size=(num_elements,))
+    capacities = np.random.randint(3, 12, size=(num_knapsacks,))
+    problem = QMKProblem(profits, weights, capacities)
+
+    #outfile = TemporaryFile()
+    outfile = os.path.join(tmp_path, f"{strategy}-save.qmkp")
+    problem.save(outfile, strategy)
+
+@pytest.mark.parametrize("strategy", ("numpy", "pickle"))
+def test_qmkp_save_pathlike(tmp_path,strategy):
+    num_elements = 10
+    num_knapsacks = 3
+    profits = np.random.randint(0, 8, size=(num_elements, num_elements))
+    profits = profits @ profits.T
+    weights = np.random.randint(1, 5, size=(num_elements,))
+    capacities = np.random.randint(3, 12, size=(num_knapsacks,))
+    problem = QMKProblem(profits, weights, capacities)
+
+    outfile = pathlib.Path(os.path.join(tmp_path, f"{strategy}-save.qmkp"))
+    problem.save(outfile, strategy)
+
+@pytest.mark.parametrize("strategy", ("numpy", "pickle"))
+def test_qmkp_save_and_load(tmp_path,strategy):
+    num_elements = 10
+    num_knapsacks = 3
+    profits = np.random.randint(0, 8, size=(num_elements, num_elements))
+    profits = profits @ profits.T
+    weights = np.random.randint(1, 5, size=(num_elements,))
+    capacities = np.random.randint(3, 12, size=(num_knapsacks,))
+    problem = QMKProblem(profits, weights, capacities)
+
+    outfile = os.path.join(tmp_path, f"{strategy}-save.qmkp")
+    problem.save(outfile, strategy)
+
+    loaded_problem = QMKProblem.load(outfile, strategy=strategy)

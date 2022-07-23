@@ -1,4 +1,6 @@
-from typing import Iterable, Any, Union, Callable, Optional, Tuple
+import os
+from typing import Iterable, Any, Union, Callable, Optional, Tuple, NoReturn
+import pickle
 
 import numpy as np
 
@@ -48,6 +50,8 @@ class QMKProblem:
         self.weights.setflags(write=False)
         self.capacities.setflags(write=False)
 
+        self.assignments = np.zeros((len(self.weights), len(self.capacities)))
+
         self.algorithm = algorithm
         self.args = args
     
@@ -92,6 +96,74 @@ class QMKProblem:
                                 *args)
         profit = total_profit_qmkp(self.profits, assignments)
         return assignments, profit
+
+    def save(self, fname: Union[str, bytes, os.PathLike],
+             strategy: str = "numpy") -> NoReturn:
+        """Save the QMKP instance
+
+        Save the profits, weights, and capacities of the problem.
+
+        Parameters
+        ----------
+        fname : str or PathLike
+            Filepath of the model to be saved at
+
+        strategy : str
+            Strategy that is used to store the model. Valid choices are
+            (case-insensitive):
+
+            - ``numpy``: Save the individual arrays of the model using the
+              :meth:`np.savez_compressed` function.
+            - ``pickle``: Save the whole object using Pythons :mod:`pickle`
+              module
+
+        Returns
+        -------
+        None
+        """
+
+        strategy = strategy.lower()
+        if strategy == "numpy":
+            np.savez_compressed(fname, profits=self.profits,
+                                weights=self.weights,
+                                capacities=self.capacities)
+        elif strategy == "pickle":
+            with open(fname, 'wb') as out_file:
+                pickle.dump(self, out_file)
+        else:
+            raise NotImplementedError("The strategy '%s' is not implemented.",
+                                      strategy)
+
+    @classmethod
+    def load(cls, fname: str, strategy: str = "numpy"):
+        """Load a QMKProblem instance
+
+        TODO
+
+        Parameters
+        ----------
+
+        Returns
+        -------
+        problem : QMKProblem
+            Loaded problem instance
+        """
+
+        strategy = strategy.lower()
+        if strategy == "numpy":
+            _ext = os.path.splitext(fname)[1]
+            if not _ext == ".npz":
+                fname = fname + ".npz"
+            _arrays = np.load(fname)
+            problem = QMKProblem(**_arrays)
+        elif strategy == "pickle":
+            with open(fname, 'rb') as obj_file:
+                problem = pickle.load(obj_file)
+        else:
+            raise NotImplementedError("The strategy '%s' is not implemented.",
+                                      strategy)
+        return problem
+
 
 def total_profit_qmkp(profits: np.array, assignments: np.array) -> float:
     """
