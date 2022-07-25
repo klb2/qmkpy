@@ -169,7 +169,45 @@ def fcs_procedure(profits: np.array,
 
 def random_assignment(profits: np.array, weights: Iterable[float],
                       capacities: Iterable[float]) -> np.array:
-    """TODO
+    """Generate a random (feasible) assignment
+
+    This function generates a random feasible solution to the specified QMKP.
+    The algorithm works as follows
+
+        1. Generate a random permutation of the items
+        2. For each item :math:`i` do
+
+            1. Determine the possible knapsacks :math:`\\mathcal{K}_i` that
+               could support the item
+            2. Random and uniformly select a choice from :math:`\\mathcal{K}_i
+               \\cup \\{\\text{skip}\\}`.
+
+    This way, a feasible solution is generated without the guarantee that every
+    item is assigned (even if it could still be assigned).
+
+
+    Parameters
+    ----------
+    profits : np.array
+        Symmetric matrix of size :math:`N\\times N` that contains the (joint)
+        profit values :math:`p_{ij}`. The profit of the single items
+        :math:`p_i` corresponds to the main diagonal elements, i.e.,
+        :math:`p_i = p_{ii}`.
+
+    weights : list
+        List of weights :math:`w_i` of the :math:`N` items that can be
+        assigned.
+
+    capacities : list
+        Capacities of the knapsacks. The number of knapsacks :math:`K` is
+        determined as ``K=len(capacities)``.
+
+    Returns
+    -------
+    assignments : np.array
+        Binary matrix of size :math:`N\\times K` which represents the final
+        assignments of items to knapsacks. If :math:`a_{ij}=1`, element
+        :math:`i` is assigned to knapsack :math:`j`.
     """
 
     capacities = np.array(capacities)
