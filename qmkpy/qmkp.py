@@ -70,7 +70,7 @@ class QMKProblem:
               args: Optional[tuple] = None) -> Tuple[np.array, float]:
         """Solve the QMKP
 
-        Solve the QMKP using `algorithm`. This function both returns the
+        Solve the QMKP using ``algorithm``. This function both returns the
         optimal assignment and the total resulting profit.
         This method also automatically sets the solution to the object's
         attribute :attr:`.assignments`.
@@ -80,21 +80,21 @@ class QMKProblem:
         ----------
         algorithm : Callable, optional
             Function that is used to solve the QMKP. It needs to follow the
-            argument order `algorithm(profits, weights, capacities, ...)`.
-            If it is `None`, the object attribute `self.algorithm` is used.
+            argument order ``algorithm(profits, weights, capacities, ...)``.
+            If it is ``None``, the object attribute :attr:`.algorithm` is used.
 
         args : tuple, optional
             Optional tuple of additional arguments that are passed to
-            `algorithm`. If it is `None`, the object attribute `self.args` is
-            used.
+            ``algorithm``. If it is ``None``, the object attribute
+            :attr:`.args` is used.
 
 
         Returns
         -------
-        assignments : np.array (N x K)
-            Found assignments which are represented by a :math:`N\\times K`
-            binary matrix where :math:`a_{ij}=1` means that item :math:`i` is
-            assigned to knapsack :math:`j`.
+        assignments : np.array
+            Binary matrix of size :math:`N\\times K` which represents the final
+            assignments of items to knapsacks. If :math:`a_{ij}=1`, element
+            :math:`i` is assigned to knapsack :math:`j`.
 
         total_profit : float
             Final total profit for the found solution.
@@ -117,7 +117,16 @@ class QMKProblem:
              strategy: str = "numpy") -> NoReturn:
         """Save the QMKP instance
 
-        Save the profits, weights, and capacities of the problem.
+        Save the profits, weights, and capacities of the problem. There exist
+        different strategies that are explained in the :attr:`strategy`
+        parameter.
+
+
+        See Also
+        --------
+        :meth:`.load()`
+            For loading a saved model.
+
 
         Parameters
         ----------
@@ -129,7 +138,7 @@ class QMKProblem:
             (case-insensitive):
 
             - ``numpy``: Save the individual arrays of the model using the
-              :meth:`np.savez_compressed` function.
+              :func:`np.savez_compressed` function.
             - ``pickle``: Save the whole object using Pythons :mod:`pickle`
               module
 
@@ -156,6 +165,12 @@ class QMKProblem:
 
         This functions allows loading a previously saved QMKProblem instance.
         The :meth:`.save()` method provides a way of saving a problem.
+
+        
+        See Also
+        --------
+        :meth:`.save()`
+            Method to save a QMKProblem instance which can then be loaded.
 
 
         Parameters
@@ -202,6 +217,8 @@ def total_profit_qmkp(profits: np.array, assignments: np.array) -> float:
     
     .. math:: \\sum_{u=1}^{K}\\left(\\sum_{i\in\\mathcal{A}_u} p_{i} + \\sum_{\substack{j\in\\mathcal{A}_u\\\\j\\neq i}} p_{ij}\\right)
 
+    where :math:`\\mathcal{A}_{u}` is the set of items that are assigned to
+    knapsack :math:`u`.
 
 
     Parameters
@@ -216,6 +233,11 @@ def total_profit_qmkp(profits: np.array, assignments: np.array) -> float:
         Binary matrix of size :math:`N\\times K` which represents the final
         assignments of items to knapsacks. If :math:`a_{ij}=1`, element
         :math:`i` is assigned to knapsack :math:`j`.
+
+    Returns
+    -------
+    float
+        Value of the total profit
     """
 
     if not checks.is_binary(assignments):

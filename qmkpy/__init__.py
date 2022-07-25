@@ -7,7 +7,8 @@ from . import algorithms
 from . import checks
 from . import util
 from .qmkp import QMKProblem, total_profit_qmkp
-from .util import value_density, chromosome_from_assignment
+from .util import (value_density, chromosome_from_assignment,
+                   assignment_from_chromosome)
 
 __all__ = ["__version__",
            "algorithms",
@@ -17,4 +18,5 @@ __all__ = ["__version__",
            "total_profit_qmkp",
            "value_density",
            "chromosome_from_assignment",
+           "assignment_from_chromosome",
           ]

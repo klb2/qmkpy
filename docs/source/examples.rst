@@ -37,7 +37,7 @@ It is possible to save a problem instance of a QMKP. This can be useful to
 share examples as a benchmark dataset to compare different algorithms.
 
 .. code-block:: python
-   :caption: Defining and Solving a QMKP
+   :caption: Saving a QMKProblem Instance
    :linenos:
 
     import numpy as np

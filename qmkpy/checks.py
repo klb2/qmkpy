@@ -59,7 +59,53 @@ def is_feasible_solution(assignments: np.array,
                          profits: np.array,
                          weights: Iterable[float], 
                          capacities: Iterable[float],
-                         raise_error: bool = False):
+                         raise_error: bool = False) -> bool:
+    """Check whether a provided assignment is a feasible solution.
+
+    This function performs a formal check whether the provided assignments is a
+    feasible solution of the specified QMKProblem.
+    This means that the shapes of the arrays match and that no weight capacity
+    constraint is violated.
+
+    
+    Parameters
+    ----------
+    assignments : np.array
+        Binary matrix of size :math:`N\\times K` which represents the final
+        assignments of items to knapsacks. If :math:`a_{ij}=1`, element
+        :math:`i` is assigned to knapsack :math:`j`.
+
+    profits : np.array
+        Symmetric matrix of size :math:`N\\times N` that contains the (joint)
+        profit values :math:`p_{ij}`. The profit of the single items
+        :math:`p_i` corresponds to the main diagonal elements, i.e.,
+        :math:`p_i = p_{ii}`.
+
+    weights : list
+        List of weights :math:`w_i` of the :math:`N` items that can be
+        assigned.
+
+    capacities : list
+        Capacities of the knapsacks. The number of knapsacks :math:`K` is
+        determined as ``K=len(capacities)``.
+
+    raise_error : bool, optional
+        If ``raise_error`` is ``False``, the function returns a ``bool``,
+        that states whether the solution is feasible.
+        If ``raise_error`` is ``True``, the function raises a ``ValueError``
+        instead.
+
+    Returns
+    -------
+    bool
+        Indication if the solution is feasible (``True``) or not (``False``)
+
+    Raises
+    ------
+    ValueError
+        This is only raised when ``raise_error`` is ``True``.
+    """
+
     assignments = np.array(assignments)
     num_items = len(weights)
     num_ks = len(capacities)
