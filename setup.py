@@ -18,7 +18,7 @@ setup(
     license='GPLv3',
     url='https://github.com/klb2/qmkpy',
     project_urls={
-        #'Documentation': "https://rearrangement-algorithm.readthedocs.io",
+        'Documentation': "https://qmkpy.readthedocs.io",
         'Source Code': 'https://github.com/klb2/qmkpy',
         },
     classifiers = [
@@ -29,6 +29,6 @@ setup(
         "Topic :: Scientific/Engineering",
         ],
     packages=find_packages(),
-    tests_require=['pytest', 'tox'],
-    install_requires=['numpy', 'scipy'],
+    tests_require=['pytest'],
+    install_requires=['numpy'],
 )
