@@ -23,6 +23,7 @@ which can be used as reference test set to fairly compare different algorithms.
 
    installation.rst
    examples.rst
+   developing.rst
    qmkpy.rst
 
 
