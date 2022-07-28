@@ -41,8 +41,7 @@ share examples as a benchmark dataset to compare different algorithms.
    :linenos:
 
     import numpy as np
-    from qmkpy import total_profit_qmkp, QMKProblem
-    from qmkpy import algorithms
+    from qmkpy import QMKProblem
 
     weights = [5, 2, 3, 4]  # four items
     capacities = [10, 5, 12, 4, 2]  # five knapsacks
@@ -55,3 +54,19 @@ share examples as a benchmark dataset to compare different algorithms.
 
     # Save the problem instance using the Numpy npz format
     qmkp.save("my_problem.npz", strategy="numpy") 
+
+
+Loading a Saved QMKProblem Instance
+-----------------------------------
+You can also load a previously saved QMKProblem instance to get a
+:class:`qmkpy.QMKProblem` object with the same profits, weights and weight
+capacities.
+
+.. code-block:: python
+   :caption: Loading a Saved QMKProblem
+   :linenos:
+
+    from qmkpy import QMKProblem
+
+    saved_problem = "my_problem.npz"  # saved model file
+    qmkp = QMKProblem.load(saved_problem, strategy="numpy")
