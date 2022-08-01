@@ -4,7 +4,7 @@ import numpy as np
 
 def value_density(profits: np.array,
                   weights: Iterable[float],
-                  sel_objects: Iterable[float],
+                  assignments: Union[np.array, Iterable[int]],
                   reduced_output: bool = False) -> Iterable[float]:
     """Calculate the value density given a set of selected objects.
 
@@ -22,8 +22,13 @@ def value_density(profits: np.array,
         List of weights :math:`w_i` of the :math:`N` items that can be
         assigned.
 
-    sel_objects : list
-        Set of selected objects
+    assignments : np.array or list of int
+        Binary matrix of size :math:`N\\times K` which represents the final
+        assignments of items to knapsacks. If :math:`a_{ij}=1`, element
+        :math:`i` is assigned to knapsack :math:`j`.
+        Alternatively, one can provide a list of the indices of selected items.
+        In this case, it is assumed that these items are assigned to all
+        knapsacks.
 
     reduced_output : bool, optional
         If set to ``True`` only the value density values of the selected
@@ -39,15 +44,24 @@ def value_density(profits: np.array,
     """
 
     num_objects = len(weights)
-    _sel_objects = np.zeros(num_objects)
-    _sel_objects[sel_objects] = 1
-    _sel_objects = np.reshape(_sel_objects, (num_objects, 1))
-    sel_objects_matrix = np.tile(_sel_objects, (1, num_objects))
-    np.fill_diagonal(sel_objects_matrix, 1)
-    contributions = np.diag(profits @ sel_objects_matrix)
-    densities = contributions/weights
+    _flat = False
+    if np.ndim(assignments) == 1:
+        _flat = True
+        idx_assignments = assignments
+        assignments = np.zeros((num_objects, 1))
+        assignments[idx_assignments] = 1
+    unassigned_items = ~np.any(assignments, axis=1)
+    unassigned_items = np.where(unassigned_items)[0]
+    contributions = profits @ assignments
+    _main_diag = np.diag(profits)
+    _main_diag_contrib = np.diag(_main_diag) @ (np.ones_like(assignments)-assignments)
+    contributions = contributions + _main_diag_contrib
+    #print(contributions)
+    densities = contributions/np.reshape(weights, (-1, 1))
+    if _flat:
+        densities = np.ravel(densities)
     if reduced_output:
-        densities = densities[sel_objects]
+        densities = densities[unassigned_items], unassigned_items
     return densities
 
 def chromosome_from_assignment(assignments: np.array) -> Iterable[int]:
@@ -110,6 +124,7 @@ def chromosome_from_assignment(assignments: np.array) -> Iterable[int]:
     chromosome[_assigned_items[:, 0]] = _assigned_items[:, 1]
     return chromosome.astype(int)
 
+
 def assignment_from_chromosome(chromosome: Iterable[int], num_ks: int) -> np.array:
     """Return the assignment matrix from a chromosome
 
@@ -142,6 +157,7 @@ def assignment_from_chromosome(chromosome: Iterable[int], num_ks: int) -> np.arr
         assignments of items to knapsacks. If :math:`a_{ij}=1`, element
         :math:`i` is assigned to knapsack :math:`j`.
     """
+
     chromosome = np.array(chromosome, dtype=int)
     num_items = len(chromosome)
     assignments = np.zeros((num_items, num_ks))

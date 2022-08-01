@@ -6,31 +6,70 @@ from qmkpy.util import chromosome_from_assignment, assignment_from_chromosome
 from qmkpy import checks
 
 
-@pytest.mark.parametrize("sel_objects,expected",
+@pytest.mark.parametrize("assignments,expected",
                          (([1, 3], [5, 6/2, 12/3, 8/4]),
                           ([], [1, 1/2, 2/3, 3/4]),
                           ([2], [3, 5/2, 2/3, 9/4]),
                           ([0, 1, 2, 3], [7, 11/2, 14/3, 17/4]),
                          ))
-def test_value_density(sel_objects, expected):
+def test_value_density_list_assign(assignments, expected):
     profits = np.array([[1, 1, 2, 3],
                         [1, 1, 4, 5],
                         [2, 4, 2, 6],
                         [3, 5, 6, 3]])
     weights = [1, 2, 3, 4]
-    vd = value_density(profits, weights, sel_objects)
+    vd = value_density(profits, weights, assignments)
     assert np.all(expected == vd)
 
-def test_value_density_reduced_output():
+@pytest.mark.parametrize("assignments,expected",
+                         (([[0, 0], [1, 0], [0, 0], [1, 0]], [[5, 1], [6/2, 1/2], [12/3, 2/3], [8/4, 3/4]]),
+                          ([[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]], [[1, 1, 1], [1/2, 1/2, 1/2], [2/3, 2/3, 2/3], [3/4, 3/4, 3/4]]),
+                          ([[1, 0], [1, 0], [1, 1], [1, 0]], [[7, 3], [11/2, 5/2], [14/3, 2/3], [17/4, 9/4]]),
+                         ))
+def test_value_density_matrix(assignments, expected):
     profits = np.array([[1, 1, 2, 3],
                         [1, 1, 4, 5],
                         [2, 4, 2, 6],
                         [3, 5, 6, 3]])
     weights = [1, 2, 3, 4]
-    sel_objects = [1, 3]
-    vd = value_density(profits, weights, sel_objects, reduced_output=True)
-    expected = np.array([6/2, 8/4])
-    assert np.all(expected == vd)
+    assignments = np.array(assignments)
+    num_ks = np.shape(assignments)[1]
+    vd = value_density(profits, weights, assignments)
+    assert np.all(expected == vd) and np.all(np.shape(vd) == (len(weights), num_ks))
+
+@pytest.mark.parametrize("assignments,expected",
+                         (([1, 3], [5, 12/3]),
+                          ([], [1, 1/2, 2/3, 3/4]),
+                          ([2], [3, 5/2, 9/4]),
+                          ([0, 1, 2, 3], []),
+                         ))
+def test_value_density_reduced_output_list_assignment(assignments, expected):
+    profits = np.array([[1, 1, 2, 3],
+                        [1, 1, 4, 5],
+                        [2, 4, 2, 6],
+                        [3, 5, 6, 3]])
+    weights = [1, 2, 3, 4]
+    vd, unassigned = value_density(profits, weights, assignments, reduced_output=True)
+    expected_unassigned = set(range(len(weights))).difference(assignments)
+    assert np.all(expected == vd) and set(unassigned) == expected_unassigned
+
+@pytest.mark.parametrize("assignments,expected",
+                         (([[0, 0], [0, 1], [0, 0], [0, 1]], [[1, 5], [2/3, 12/3]]),
+                          ([[0, 0], [0, 0], [0, 0], [0, 0]], [[1, 1], [1/2, 1/2], [2/3, 2/3], [3/4, 3/4]]),
+                          ([[0, 0, 0], [0, 0, 0], [0, 1, 0], [0, 0, 0]], [[1, 3, 1], [1/2, 5/2, 1/2], [3/4, 9/4, 3/4]]),
+                          ([[0, 0, 1], [0, 1, 0], [1, 0, 0], [0, 0, 1]], np.empty((0, 3))),
+                         ))
+def test_value_density_reduced_output_matrix_assignment(assignments, expected):
+    profits = np.array([[1, 1, 2, 3],
+                        [1, 1, 4, 5],
+                        [2, 4, 2, 6],
+                        [3, 5, 6, 3]])
+    weights = [1, 2, 3, 4]
+    vd, unassigned = value_density(profits, weights, assignments, reduced_output=True)
+    _assigned = np.where(np.any(assignments, axis=1))[0]
+    expected_unassigned = set(range(len(weights))).difference(_assigned)
+    assert np.all(expected == vd) and set(unassigned) == expected_unassigned
+
 
 def test_profit():
     profits = np.array([[1, 1, 2, 3],
