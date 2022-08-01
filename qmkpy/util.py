@@ -8,8 +8,31 @@ def value_density(profits: np.array,
                   reduced_output: bool = False) -> Iterable[float]:
     """Calculate the value density given a set of selected objects.
 
-    Note that this function will always add object :math:`i` to the selected
-    objects for the value of object :math:`i`.
+    This function calculates the value density of item :math:`i` for knapsack
+    :math:`k` and given assignments :math:`\\mathcal{A}_k` according to
+
+    .. math:: \\mathrm{vd}_i(\\mathcal{A}_k) = \\frac{1}{w_i} \\left(p_i + \\sum_{\\substack{j\\in\\mathcal{A}_k\\\\j\\neq i}} p_{ij}\\right)
+
+    This value indicates the profit (per item weight) that is gained by adding
+    the item :math:`i` to knapsack :math:`k` when the items
+    :math:`\\mathcal{A}_k` are already assigned.
+    It is adapted from the notion of the value density from (Hiley, Julstrom,
+    2006).
+
+    When a full array of assignements is used as input, a full array of value
+    densities is returned as
+
+    .. math::
+        \\mathrm{vd}(\\mathcal{A}) =
+        \\begin{pmatrix}
+            \\mathrm{vd}_1(\\mathcal{A}_1) & \\mathrm{vd}_1(\\mathcal{A}_2) & \\cdots & \\mathrm{vd}_1(\\mathcal{A}_K)\\\\
+            \\mathrm{vd}_2(\\mathcal{A}_1) & \\mathrm{vd}_2(\\mathcal{A}_2) & \\cdots & \\mathrm{vd}_2(\\mathcal{A}_K)\\\\
+            \\vdots & \\cdots & \\ddots & \\vdots \\\\
+            \\mathrm{vd}_N(\\mathcal{A}_1) & \\mathrm{vd}_N(\\mathcal{A}_2) & \\cdots & \\mathrm{vd}_N(\\mathcal{A}_K)
+        \\end{pmatrix}
+
+    When the parameter ``reduced_output`` is set to ``True`` only a subset with
+    the values of the unassigned items is returned.
 
 
     Parameters
@@ -31,16 +54,24 @@ def value_density(profits: np.array,
         knapsacks.
 
     reduced_output : bool, optional
-        If set to ``True`` only the value density values of the selected
-        objects are returned.
+        If set to ``True`` only the value density values of the unassigned
+        objects are returned. Additionally, the indices of the unassigned items
+        are returned as a second output.
 
     Returns
     -------
-    densities : list
-        List that contains the value densities of the objects. The length is
+    densities : np.array
+        Array that contains the value densities of the objects. The length is
         equal to :math:`N`, if ``reduced_output`` is ``False``.
         If ``reduced_output`` is ``True``, the return has length
-        ``len(densities)==len(sel_objects)``.
+        ``len(densities)==len(unassigned_items)``.
+        The number of dimensions is equal to the number of dimensions of
+        ``assignments``. Each column corresponds to a knapsack. If only a flat
+        array is used as input, a flat array is returned.
+
+    unassigned_items : list
+        List of the indices of the unassigned items. This is only returned when
+        ``reduced_output`` is set to ``True``.
     """
 
     num_objects = len(weights)
@@ -56,7 +87,6 @@ def value_density(profits: np.array,
     _main_diag = np.diag(profits)
     _main_diag_contrib = np.diag(_main_diag) @ (np.ones_like(assignments)-assignments)
     contributions = contributions + _main_diag_contrib
-    #print(contributions)
     densities = contributions/np.reshape(weights, (-1, 1))
     if _flat:
         densities = np.ravel(densities)
