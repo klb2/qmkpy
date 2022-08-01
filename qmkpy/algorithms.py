@@ -243,7 +243,43 @@ def round_robin(profits: np.array, weights: Iterable[float],
 
     This algorithm follows a simple round-robin scheme to assign items to
     knapsacks.
+    The knapsacks are iterated in the order provided by ``order_ks``.
+    In each round, the current knapsack selects the item with the highest value
+    density that still fits in the knapsack.
 
+
+    Parameters
+    ----------
+    profits : np.array
+        Symmetric matrix of size :math:`N\\times N` that contains the (joint)
+        profit values :math:`p_{ij}`.
+
+    weights : list of float
+        List of weights :math:`w_i` of the :math:`N` items that can be
+        assigned.
+
+    capacities : list of float
+        Capacities of the knapsacks. The number of knapsacks :math:`K` is
+        determined as ``K=len(capacities)``.
+
+    starting_assignments : np.array, optional
+        Binary matrix of size :math:`N\\times K` which represents existing
+        starting assignments of items to knapsacks. If :math:`a_{ij}=1`,
+        element :math:`i` is assigned to knapsack :math:`j`. These assignments
+        are not modified and will only be completed.
+        If it is `None`, no existing assignment is assumed.
+
+    order_ks : list of int, optional
+        Order in which the knapsacks select the items. If none is given, they
+        are iterated by index, i.e., ``order_ks = range(num_ks)``.
+
+
+    Returns
+    -------
+    assignments : np.array
+        Binary matrix of size :math:`N\\times K` which represents the final
+        assignments of items to knapsacks. If :math:`a_{ij}=1`, element
+        :math:`i` is assigned to knapsack :math:`j`.
     """
     num_ks = len(capacities)
     num_items = len(weights)
@@ -252,25 +288,30 @@ def round_robin(profits: np.array, weights: Iterable[float],
 
     if starting_assignment is None:
         starting_assignment = np.zeros((num_items, num_ks))
+    if order_ks is None:
+        order_ks = np.arange(num_ks)
+
+    start_load = weights @ starting_assignment
+    remain_capac = capacities - start_load
+
     if not is_binary(starting_assignment):
         raise ValueError("The starting assignment needs to be a binary matrix")
     if not np.all(np.shape(starting_assignment) == (num_items, num_ks)):
         raise ValueError("The shape of the starting assignment needs to be num_items x num_knapsacks")
+    if np.any(remain_capac < 0):
+        raise ValueError("The starting assignment already violates the weight capacity limit")
 
-    start_load = weights @ starting_assignment
-    remain_capac = capacities - start_load
     densities, unassigned = value_density(profits, weights, starting_assignment,
                                           reduced_output=True)
 
-    if order_ks is None:
-        order_ks = np.arange(num_ks)
     while len(unassigned) > 0 and np.min(weights[unassigned]) < np.max(remain_capac):
         for idx_ks in order_ks:
             if not np.any(weights[unassigned] <= remain_capac[idx_ks]):
                 continue
-            best_items = np.argsort(densities[:, idx_ks])[::-1]
-            _best_poss_item = np.argmax(weights[best_items] <= remain_capac[idx_ks])
-            idx_selected_item = unassigned[_best_poss_item]
+            _idx_best_unass_items = np.argsort(densities[:, idx_ks])[::-1]
+            _idx_best_items = unassigned[_idx_best_unass_items]
+            _best_poss_unass_item = np.argmax(weights[_idx_best_items] <= remain_capac[idx_ks])
+            idx_selected_item = _idx_best_items[_best_poss_unass_item]
             assignments[idx_selected_item, idx_ks] = 1
             remain_capac[idx_ks] -= weights[idx_selected_item]
             densities, unassigned = value_density(profits, weights,
