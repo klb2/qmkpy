@@ -6,14 +6,18 @@ from qmkpy.util import chromosome_from_assignment, assignment_from_chromosome
 from qmkpy import checks
 
 
-def test_value_density():
+@pytest.mark.parametrize("sel_objects,expected",
+                         (([1, 3], [5, 6/2, 12/3, 8/4]),
+                          ([], [1, 1/2, 2/3, 3/4]),
+                          ([2], [3, 5/2, 2/3, 9/4]),
+                          ([0, 1, 2, 3], [7, 11/2, 14/3, 17/4]),
+                         ))
+def test_value_density(sel_objects, expected):
     profits = np.array([[1, 1, 2, 3],
                         [1, 1, 4, 5],
                         [2, 4, 2, 6],
                         [3, 5, 6, 3]])
     weights = [1, 2, 3, 4]
-    sel_objects = [1, 3]
-    expected = np.array([5, 6/2, 12/3, 8/4])
     vd = value_density(profits, weights, sel_objects)
     assert np.all(expected == vd)
 
