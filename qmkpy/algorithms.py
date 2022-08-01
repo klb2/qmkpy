@@ -12,9 +12,9 @@ def constructive_procedure(profits: np.array,
                            starting_assignment: np.array = None) -> np.array:
     """Constructive procedure that completes a starting assignment
 
-    This constructive procedure is based on Algorithm 1 in (Aider, Gacem, Hifi,
-    2022). It is a greedy algorithm that completes a partial solution of the
-    QMKP.
+    This constructive procedure is based on Algorithm 1 from (Aider, Gacem,
+    Hifi, 2022) and the greedy heuristic in (Hiley, Julstrom, 2006). It is a
+    greedy algorithm that completes a partial solution of the QMKP.
 
 
     Parameters
@@ -48,6 +48,7 @@ def constructive_procedure(profits: np.array,
     """
 
     capacities = np.array(capacities)
+    weights = np.array(weights)
     num_items = len(weights)
     num_ks = len(capacities)
 
@@ -59,32 +60,39 @@ def constructive_procedure(profits: np.array,
     if not np.all(np.shape(starting_assignment) == (num_items, num_ks)):
         raise ValueError("The shape of the starting assignment needs to be num_items x num_knapsacks")
 
-    _unassigned_items = ~np.any(starting_assignment, axis=1)
-    j_prime = np.where(_unassigned_items)[0]
-    #j_prime = list(range(num_items))
-
     start_load = weights @ starting_assignment
     capacities = capacities - start_load
     idx_c_bar = np.argsort(capacities)[::-1]
     c_bar = capacities[idx_c_bar]
 
-    densities = value_density(profits, weights, j_prime, reduced_output=True)
-    idx_sort_objects = np.argsort(densities)[::-1]
+    #densities = value_density(profits, weights, j_prime, reduced_output=True)
+    dens_v, unassigned = value_density(profits, weights, starting_assignment, reduced_output=True)
+    #idx_sort_objects = np.argsort(densities)[::-1]
 
     # 2. Iterative Step
-    #solution = np.zeros((num_items, num_ks))
     solution = np.copy(starting_assignment)
-    for _idx_curr_object in idx_sort_objects:
-        idx_curr_object = j_prime[_idx_curr_object]
-        _weight_l = weights[idx_curr_object]
-        _ks_w_space = np.where(c_bar >= _weight_l)[0]
-        if len(_ks_w_space) >= 1:
-            _ks_bar = _ks_w_space[0]
-            _real_ks = idx_c_bar[_ks_bar]
-            solution[idx_curr_object, _real_ks] = 1
-            c_bar[_ks_bar] = c_bar[_ks_bar] - _weight_l
-        else:
-            solution[idx_curr_object, :] = 0
+    while len(unassigned) > 0 and np.min(weights[unassigned]) < np.max(capacities):
+        idx_sort_v_flat = np.argsort(dens_v, axis=None)[::-1]
+        idx_sort_v = np.unravel_index(idx_sort_v_flat, np.shape(dens_v))
+        for idx_el_v, idx_user in zip(*idx_sort_v):
+            idx_element = unassigned[idx_el_v]
+            if weights[idx_element] <= capacities[idx_user]:
+                solution[idx_element, idx_user] = 1
+                capacities[idx_user] = capacities[idx_user] - weights[idx_element]
+                break
+        dens_v, unassigned = value_density(profits, weights, solution,
+                                           reduced_output=True)
+    #for _idx_curr_object in idx_sort_objects:
+    #    idx_curr_object = j_prime[_idx_curr_object]
+    #    _weight_l = weights[idx_curr_object]
+    #    _ks_w_space = np.where(c_bar >= _weight_l)[0]
+    #    if len(_ks_w_space) >= 1:
+    #        _ks_bar = _ks_w_space[0]
+    #        _real_ks = idx_c_bar[_ks_bar]
+    #        solution[idx_curr_object, _real_ks] = 1
+    #        c_bar[_ks_bar] = c_bar[_ks_bar] - _weight_l
+    #    else:
+    #        solution[idx_curr_object, :] = 0
         #j_prime.remove(idx_curr_object)
     #assert len(j_prime) == 0
     return solution
@@ -100,7 +108,7 @@ def fcs_procedure(profits: np.array,
     This fix and complete solution (FCS) procedure is based on Algorithm 2 from
     (Aider, Gacem, Hifi, 2022). It is basically a stochastic hill-climber
     wrapper around the constructive procedure :meth:`constructive_procedure`
-    (also see (Hiley, Julstrom, 2006).
+    (also see (Hiley, Julstrom, 2006)).
 
 
     Parameters
@@ -224,4 +232,48 @@ def random_assignment(profits: np.array, weights: Iterable[float],
         _ks = np.random.choice(avail_ks)
         assignments[_item, _ks] = 1
         capacities[_ks] = capacities[_ks] - weights[_item]
+    return assignments
+
+
+def round_robin(profits: np.array, weights: Iterable[float],
+                capacities: Iterable[float],
+                starting_assignment: np.array = None,
+                order_ks: Optional[Iterable[int]] = None) -> np.array:
+    """Simple round-robin algorithm
+
+    This algorithm follows a simple round-robin scheme to assign items to
+    knapsacks.
+
+    """
+    num_ks = len(capacities)
+    num_items = len(weights)
+    weights = np.array(weights)
+    assignments = np.zeros((num_items, num_ks))
+
+    if starting_assignment is None:
+        starting_assignment = np.zeros((num_items, num_ks))
+    if not is_binary(starting_assignment):
+        raise ValueError("The starting assignment needs to be a binary matrix")
+    if not np.all(np.shape(starting_assignment) == (num_items, num_ks)):
+        raise ValueError("The shape of the starting assignment needs to be num_items x num_knapsacks")
+
+    start_load = weights @ starting_assignment
+    remain_capac = capacities - start_load
+    densities, unassigned = value_density(profits, weights, starting_assignment,
+                                          reduced_output=True)
+
+    if order_ks is None:
+        order_ks = np.arange(num_ks)
+    while len(unassigned) > 0 and np.min(weights[unassigned]) < np.max(remain_capac):
+        for idx_ks in order_ks:
+            if not np.any(weights[unassigned] <= remain_capac[idx_ks]):
+                continue
+            best_items = np.argsort(densities[:, idx_ks])[::-1]
+            _best_poss_item = np.argmax(weights[best_items] <= remain_capac[idx_ks])
+            idx_selected_item = unassigned[_best_poss_item]
+            assignments[idx_selected_item, idx_ks] = 1
+            remain_capac[idx_ks] -= weights[idx_selected_item]
+            densities, unassigned = value_density(profits, weights,
+                                                  assignments,
+                                                  reduced_output=True)
     return assignments

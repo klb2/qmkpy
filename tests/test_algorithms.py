@@ -2,11 +2,12 @@ import numpy as np
 import pytest
 
 from qmkpy import total_profit_qmkp
-from qmkpy.algorithms import constructive_procedure, fcs_procedure, random_assignment
+from qmkpy.algorithms import (constructive_procedure, fcs_procedure,
+                              random_assignment, round_robin)
 from qmkpy import checks
 
 
-SOLVERS = (constructive_procedure, fcs_procedure, random_assignment)
+SOLVERS = (constructive_procedure, fcs_procedure, random_assignment, round_robin)
 
 @pytest.mark.parametrize("solver", SOLVERS)
 def test_solver_feasibility(solver):
@@ -49,6 +50,20 @@ def test_solver_large(solver):
     total_profit = total_profit_qmkp(profits, solution)
     print(total_profit)
     assert total_profit > 0
+
+@pytest.mark.parametrize("solver", SOLVERS)
+def test_solver_no_assignments(solver):
+    weights = [10, 5, 14, 52]
+    capacities = [1, 4, 2, 1]
+    num_elements = len(weights)
+    num_knapsacks = len(capacities)
+    profits = np.random.randint(0, 8, size=(num_elements, num_elements))
+    profits = profits @ profits.T
+    solution = solver(profits, weights, capacities)
+    print(solution)
+    total_profit = total_profit_qmkp(profits, solution)
+    print(total_profit)
+    assert (total_profit == 0) and np.all(solution == 0)
 
 def test_cp_with_starting():
     profits = np.array([[1, 1, 2, 3],
