@@ -159,8 +159,10 @@ def fcs_procedure(profits: np.array,
     solution_best = np.copy(current_solution)
     if alpha is None:
         alpha = np.random.rand()
-    if not 0 <= alpha <= 1:
-        raise ValueError("Alpha needs to be in the interval [0, 1]")
+    if not 0 < alpha < 1:
+        raise ValueError("Alpha needs to be in the interval (0, 1)")
+    if len_history < 1:
+        raise ValueError("The history length needs to be larger or equal to 1.")
     #profit_history = []
     no_improvement = 0
     while no_improvement < len_history:
@@ -292,7 +294,6 @@ def round_robin(profits: np.array, weights: Iterable[float],
     num_ks = len(capacities)
     num_items = len(weights)
     weights = np.array(weights)
-    assignments = np.zeros((num_items, num_ks))
 
     if starting_assignment is None:
         starting_assignment = np.zeros((num_items, num_ks))
@@ -309,6 +310,7 @@ def round_robin(profits: np.array, weights: Iterable[float],
     if np.any(remain_capac < 0):
         raise ValueError("The starting assignment already violates the weight capacity limit")
 
+    assignments = np.copy(starting_assignment)
     densities, unassigned = value_density(profits, weights, starting_assignment,
                                           reduced_output=True)
 
