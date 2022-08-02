@@ -30,7 +30,7 @@ additional joint profit $p_{ij}$.
 The package can easily be installed via pip.
 Either from the PyPI
 ```bash
-pip3 install qkmpy
+pip3 install qmkpy
 ```
 or from the GitHub repository
 ```bash
