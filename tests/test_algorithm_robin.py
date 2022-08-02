@@ -55,3 +55,38 @@ def test_rr_feasibility_starting_assignment(starting_assignment):
     with pytest.raises(ValueError):
         solution = round_robin(profits, weights, capacities,
                                starting_assignment=starting_assignment)
+
+
+@pytest.mark.parametrize("order_ks", (
+                         [], None,
+                         [1, 3],
+                         [0, 1, 2, 3],
+                         [0, 0, 1, 3, 0, 2, 1],
+                         ))
+def test_rr_order_ks(order_ks):
+    num_elements = 8
+    num_knapsacks = 4
+    profits = np.random.randint(1, 8, size=(num_elements, num_elements))
+    profits = profits @ profits.T
+    weights = np.random.randint(1, 5, size=(num_elements,))
+    capacities = np.random.randint(5, 12, size=(num_knapsacks,))
+    solution = round_robin(profits, weights, capacities,
+                           order_ks=order_ks)
+    total_profit = total_profit_qmkp(profits, solution)
+    assert np.all(np.shape(solution) == (num_elements, num_knapsacks)) and total_profit > 0
+
+@pytest.mark.parametrize("order_ks", (
+                         [0, 1, 2, 3, 4],
+                         [1, 2, 3, 4],
+                         [0, -1, -2, -3],
+                         ))
+def test_rr_order_ks_error(order_ks):
+    num_elements = 8
+    num_knapsacks = 4
+    profits = np.random.randint(1, 8, size=(num_elements, num_elements))
+    profits = profits @ profits.T
+    weights = np.random.randint(1, 5, size=(num_elements,))
+    capacities = np.random.randint(5, 12, size=(num_knapsacks,))
+    with pytest.raises(ValueError):
+        solution = round_robin(profits, weights, capacities,
+                            order_ks=order_ks)

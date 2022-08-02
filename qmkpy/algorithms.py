@@ -297,8 +297,10 @@ def round_robin(profits: np.array, weights: Iterable[float],
 
     if starting_assignment is None:
         starting_assignment = np.zeros((num_items, num_ks))
-    if order_ks is None:
+    if order_ks is None or len(order_ks) == 0:
         order_ks = np.arange(num_ks)
+    if not set(order_ks).issubset(set(range(num_ks))):
+        raise ValueError("The order of the knapsacks must only contain indices of the knapsacks, i.e., every element needs to be an integer from {0, 1, ..., K-1}.")
 
     start_load = weights @ starting_assignment
     remain_capac = capacities - start_load
@@ -314,7 +316,7 @@ def round_robin(profits: np.array, weights: Iterable[float],
     densities, unassigned = value_density(profits, weights, starting_assignment,
                                           reduced_output=True)
 
-    while len(unassigned) > 0 and np.min(weights[unassigned]) < np.max(remain_capac):
+    while len(unassigned) > 0 and np.min(weights[unassigned]) < np.max(remain_capac[order_ks]):
         for idx_ks in order_ks:
             if not np.any(weights[unassigned] <= remain_capac[idx_ks]):
                 continue
