@@ -45,6 +45,11 @@ def constructive_procedure(profits: np.array,
         Binary matrix of size :math:`N\\times K` which represents the final
         assignments of items to knapsacks. If :math:`a_{ij}=1`, element
         :math:`i` is assigned to knapsack :math:`j`.
+
+    Raises
+    ------
+    ValueError
+        Raises a :class:`ValueError` if the starting assignment is infeasible.
     """
 
     capacities = np.array(capacities)
@@ -64,6 +69,9 @@ def constructive_procedure(profits: np.array,
     capacities = capacities - start_load
     idx_c_bar = np.argsort(capacities)[::-1]
     c_bar = capacities[idx_c_bar]
+
+    if np.any(capacities < 0):
+        raise ValueError("The starting assignment already violates the weight capacity limit")
 
     #densities = value_density(profits, weights, j_prime, reduced_output=True)
     dens_v, unassigned = value_density(profits, weights, starting_assignment, reduced_output=True)
