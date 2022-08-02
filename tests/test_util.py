@@ -99,6 +99,18 @@ def test_profit2():
     print(_objective)
     assert expected == _objective
 
+def test_profit_fail():
+    profits = np.array([[1, 1, 2, 3],
+                        [1, 1, 4, 5],
+                        [2, 4, 2, 6],
+                        [3, 5, 6, 3]])
+    assignments = np.array([[0, 0, 1],
+                            [2, 0, 0],
+                            [-1, 0, 0],
+                            [0, 0, 1]])
+    with pytest.raises(ValueError):
+        _objective = total_profit_qmkp(profits, assignments)
+
 @pytest.mark.parametrize("assignments,expected",
                          ((np.array([[0, 1, 0], [1, 0, 0], [1, 0, 0], [0, 0, 1]]), [1, 0, 0, 2]),
                           (np.array([[0, 0], [0, 1], [1, 0], [0, 0]]), [-1, 1, 0, -1]),

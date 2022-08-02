@@ -34,8 +34,7 @@ def test_solver(solver):
     print(solution)
     total_profit = total_profit_qmkp(profits, solution)
     print(total_profit)
-    assert total_profit > 0
-
+    assert total_profit >= 0
 
 @pytest.mark.parametrize("solver", SOLVERS)
 def test_solver_large(solver):
@@ -49,7 +48,7 @@ def test_solver_large(solver):
     print(solution)
     total_profit = total_profit_qmkp(profits, solution)
     print(total_profit)
-    assert total_profit > 0
+    assert total_profit >= 0
 
 @pytest.mark.parametrize("solver", SOLVERS)
 def test_solver_no_assignments(solver):
@@ -64,37 +63,3 @@ def test_solver_no_assignments(solver):
     total_profit = total_profit_qmkp(profits, solution)
     print(total_profit)
     assert (total_profit == 0) and np.all(solution == 0)
-
-def test_cp_with_starting():
-    profits = np.array([[1, 1, 2, 3],
-                        [1, 1, 4, 5],
-                        [2, 4, 2, 6],
-                        [3, 5, 6, 3]])
-    weights = [1, 3, 2, 2]
-    capacities = [5, 5, 3]
-    starting_assignment = np.array([[0, 0, 0],
-                                    [0, 1, 0],
-                                    [0, 0, 0],
-                                    [1, 0, 0]])
-    solution = constructive_procedure(profits, weights, capacities,
-                                      starting_assignment=starting_assignment)
-    print(solution)
-    total_profit = total_profit_qmkp(profits, solution)
-    print(total_profit)
-    assert np.all(np.shape(solution) == (len(weights), len(capacities))) and total_profit > 0
-
-def test_cp_with_starting():
-    profits = np.array([[1, 1, 2, 3],
-                        [1, 1, 4, 5],
-                        [2, 4, 2, 6],
-                        [3, 5, 6, 3]])
-    weights = [1, 3, 2, 2]
-    capacities = [5, 5, 3]
-    starting_assignment = np.array([[0, 0, 0],
-                                    [0, 1, 0],
-                                    [0, 0, 0],
-                                    [1, 0, 0]])
-    solution = constructive_procedure(profits, weights, capacities,
-                                      starting_assignment=starting_assignment)
-    _new_assignments = solution - starting_assignment
-    assert np.all(_new_assignments >= 0)

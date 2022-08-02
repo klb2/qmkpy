@@ -45,6 +45,8 @@ def test_is_feasible_solution_pass(assignments):
                           [[1, 1, 0], [0, 0, 1], [0, 1, 0], [1, 0, 0]],
                           [[0, 0], [1, 0], [0, 1], [1, 0]],
                           [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+                          [[1, 0, 0], [0, 2, 0], [0, 0, 1]],
+                          [[-1, 0, 0], [0, 1, 0], [0, 0, 1]],
                          ))
 def test_is_feasible_solution_fail(assignments):
     profits = np.array([[1, 1, 2, 3],
@@ -67,6 +69,8 @@ def test_is_feasible_solution_fail(assignments):
                           [[1, 1, 0], [0, 0, 1], [0, 1, 0], [1, 0, 0]],
                           [[0, 0], [1, 0], [0, 1], [1, 0]],
                           [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+                          [[1, 0, 0], [0, 2, 0], [0, 0, 1]],
+                          [[-1, 0, 0], [0, 1, 0], [0, 0, 1]],
                          ))
 def test_is_feasible_solution_raise(assignments):
     profits = np.array([[1, 1, 2, 3],

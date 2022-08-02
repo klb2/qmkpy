@@ -5,7 +5,7 @@ import pathlib
 import numpy as np
 import pytest
 
-from qmkpy import total_profit_qmkp, QMKProblem
+from qmkpy import QMKProblem
 from qmkpy.algorithms import constructive_procedure, fcs_procedure
 from qmkpy import checks
 
@@ -128,3 +128,33 @@ def test_qmkp_save_and_load(tmp_path,strategy):
     problem.save(outfile, strategy)
 
     loaded_problem = QMKProblem.load(outfile, strategy=strategy)
+
+@pytest.mark.parametrize("strategy", ("error", "fail"))
+def test_qmkp_save_fail_strategy(tmp_path,strategy):
+    num_elements = 10
+    num_knapsacks = 3
+    profits = np.random.randint(0, 8, size=(num_elements, num_elements))
+    profits = profits @ profits.T
+    weights = np.random.randint(1, 5, size=(num_elements,))
+    capacities = np.random.randint(3, 12, size=(num_knapsacks,))
+    problem = QMKProblem(profits, weights, capacities)
+
+    outfile = os.path.join(tmp_path, f"{strategy}-save.qmkp")
+    with pytest.raises(NotImplementedError):
+        problem.save(outfile, strategy)
+
+@pytest.mark.parametrize("strategy", ("unknown",))
+def test_qmkp_load_fail(tmp_path,strategy):
+    num_elements = 10
+    num_knapsacks = 3
+    profits = np.random.randint(0, 8, size=(num_elements, num_elements))
+    profits = profits @ profits.T
+    weights = np.random.randint(1, 5, size=(num_elements,))
+    capacities = np.random.randint(3, 12, size=(num_knapsacks,))
+    problem = QMKProblem(profits, weights, capacities)
+
+    outfile = os.path.join(tmp_path, f"{strategy}-save.qmkp")
+    problem.save(outfile, strategy="numpy")
+
+    with pytest.raises(NotImplementedError):
+        loaded_problem = QMKProblem.load(outfile, strategy=strategy)
