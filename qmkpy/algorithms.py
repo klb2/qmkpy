@@ -2,7 +2,8 @@ from typing import Iterable, Any, Optional
 
 import numpy as np
 
-from .qmkp import value_density, total_profit_qmkp
+from .qmkp import total_profit_qmkp
+from .util import value_density
 from .checks import is_binary
 
 

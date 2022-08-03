@@ -10,6 +10,8 @@ from qmkpy.algorithms import constructive_procedure, fcs_procedure
 from qmkpy import checks
 
 
+SAVE_LOAD_STRATEGIES = ("numpy", "pickle", "txt")
+
 def test_solver_consistency():
     profits = np.array([[1, 1, 2, 3],
                         [1, 1, 4, 5],
@@ -87,8 +89,8 @@ def test_solver_with_args_set_later():
     pr_solution, profit = problem.solve()
     assert checks.is_feasible_solution(pr_solution, profits, weights, capacities)
 
-@pytest.mark.parametrize("strategy", ("numpy", "pickle"))
-def test_qmkp_save(tmp_path,strategy):
+@pytest.mark.parametrize("strategy", SAVE_LOAD_STRATEGIES)
+def test_qmkp_save(tmp_path, strategy):
     num_elements = 10
     num_knapsacks = 3
     profits = np.random.randint(0, 8, size=(num_elements, num_elements))
@@ -101,8 +103,8 @@ def test_qmkp_save(tmp_path,strategy):
     outfile = os.path.join(tmp_path, f"{strategy}-save.qmkp")
     problem.save(outfile, strategy)
 
-@pytest.mark.parametrize("strategy", ("numpy", "pickle"))
-def test_qmkp_save_pathlike(tmp_path,strategy):
+@pytest.mark.parametrize("strategy", SAVE_LOAD_STRATEGIES)
+def test_qmkp_save_pathlike(tmp_path, strategy):
     num_elements = 10
     num_knapsacks = 3
     profits = np.random.randint(0, 8, size=(num_elements, num_elements))
@@ -114,8 +116,8 @@ def test_qmkp_save_pathlike(tmp_path,strategy):
     outfile = pathlib.Path(os.path.join(tmp_path, f"{strategy}-save.qmkp"))
     problem.save(outfile, strategy)
 
-@pytest.mark.parametrize("strategy", ("numpy", "pickle"))
-def test_qmkp_save_and_load(tmp_path,strategy):
+@pytest.mark.parametrize("strategy", SAVE_LOAD_STRATEGIES)
+def test_qmkp_save_and_load(tmp_path, strategy):
     num_elements = 10
     num_knapsacks = 3
     profits = np.random.randint(0, 8, size=(num_elements, num_elements))
@@ -128,9 +130,12 @@ def test_qmkp_save_and_load(tmp_path,strategy):
     problem.save(outfile, strategy)
 
     loaded_problem = QMKProblem.load(outfile, strategy=strategy)
+    assert (np.all(loaded_problem.profits == profits) and
+            np.all(loaded_problem.weights == weights) and
+            np.all(loaded_problem.capacities == capacities))
 
 @pytest.mark.parametrize("strategy", ("error", "fail"))
-def test_qmkp_save_fail_strategy(tmp_path,strategy):
+def test_qmkp_save_fail_strategy(tmp_path, strategy):
     num_elements = 10
     num_knapsacks = 3
     profits = np.random.randint(0, 8, size=(num_elements, num_elements))

@@ -9,6 +9,7 @@ Submodules
 
    qmkpy.algorithms
    qmkpy.checks
+   qmkpy.io
    qmkpy.qmkp
    qmkpy.util
 

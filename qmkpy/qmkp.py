@@ -5,7 +5,8 @@ import pickle
 import numpy as np
 
 from . import checks
-from .util import value_density
+from . import io
+
 
 class QMKProblem:
     """Base class to represent a quadratic multiple knapsack problem.
@@ -138,9 +139,13 @@ class QMKProblem:
             (case-insensitive):
 
             - ``numpy``: Save the individual arrays of the model using the
-              :func:`np.savez_compressed` function.
+              :func:`np.savez_compressed` function. See also
+              :meth:`qmkpy.io.save_problem_numpy()`.
             - ``pickle``: Save the whole object using Pythons :mod:`pickle`
-              module
+              module. See also :meth:`qmkpy.io.save_problem_pickle()`.
+            - ``txt``: Save the arrays of the model using the text-based format
+              established by Billionnet and Soutif. See also
+              :meth:`qmkpy.io.save_problem_txt()`.
 
         Returns
         -------
@@ -149,12 +154,11 @@ class QMKProblem:
 
         strategy = strategy.lower()
         if strategy == "numpy":
-            np.savez_compressed(fname, profits=self.profits,
-                                weights=self.weights,
-                                capacities=self.capacities)
+            io.save_problem_numpy(fname, self)
         elif strategy == "pickle":
-            with open(fname, 'wb') as out_file:
-                pickle.dump(self, out_file)
+            io.save_problem_pickle(fname, self)
+        elif strategy == "txt":
+            io.save_problem_txt(fname, self)
         else:
             raise NotImplementedError("The strategy '%s' is not implemented.",
                                       strategy)
@@ -186,6 +190,8 @@ class QMKProblem:
               :meth:`np.savez_compressed` function.
             - ``pickle``: Save the whole object using Pythons :mod:`pickle`
               module
+            - ``txt``: Save the arrays of the model using the text-based format
+              established by Billionnet and Soutif.
 
         Returns
         -------
@@ -195,14 +201,11 @@ class QMKProblem:
 
         strategy = strategy.lower()
         if strategy == "numpy":
-            _ext = os.path.splitext(fname)[1]
-            if not _ext == ".npz":
-                fname = fname + ".npz"
-            _arrays = np.load(fname)
-            problem = QMKProblem(**_arrays)
+            problem = io.load_problem_numpy(fname)
         elif strategy == "pickle":
-            with open(fname, 'rb') as obj_file:
-                problem = pickle.load(obj_file)
+            problem = io.load_problem_pickle(fname)
+        elif strategy == "txt":
+            problem = io.load_problem_txt(fname)
         else:
             raise NotImplementedError("The strategy '%s' is not implemented.",
                                       strategy)
@@ -215,7 +218,7 @@ def total_profit_qmkp(profits: np.array, assignments: np.array) -> float:
     This function calculates the total profit of a QMKP for a given profit
     matrix :math:`P` and assignments :math:`\\mathcal{A}` as
     
-    .. math:: \\sum_{u=1}^{K}\\left(\\sum_{i\in\\mathcal{A}_u} p_{i} + \\sum_{\substack{j\in\\mathcal{A}_u\\\\j\\neq i}} p_{ij}\\right)
+    .. math:: \\sum_{u=1}^{K}\\left(\\sum_{i\\in\\mathcal{A}_u} p_{i} + \\sum_{\\substack{j\\in\\mathcal{A}_u\\\\j\\neq i}} p_{ij}\\right)
 
     where :math:`\\mathcal{A}_{u}` is the set of items that are assigned to
     knapsack :math:`u`.
