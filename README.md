@@ -15,7 +15,7 @@ The QMKP is defined as the following combinatorial optimization problem
 
 $$
 \begin{alignat}{3}
-	\max\quad & \sum_{u\in\mathcal{K}}\Bigg(\sum_{i\in\mathcal{A}(u)} p_{u,i} &+&\sum_{\substack{j\in\mathcal{A}(u), \\ j\neq i}} p_{u,ij}\Bigg)\\
+	\max\quad & \sum_{u\in\mathcal{K}}\Bigg(\sum_{i\in\mathcal{A}(u)} p_{i} &+&\sum_{\substack{j\in\mathcal{A}(u), \\ j\neq i}} p_{ij}\Bigg)\\
 	\mathrm{s.t.}\quad & \sum_{i\in\mathcal{A}(u)} w_{i} \leq c_u & \quad & \forall u\in\mathcal{K} \\
 	& \sum_{u=1}^{K} a_{iu} \leq 1  & & \forall 1\leq i \leq N
 \end{alignat}
