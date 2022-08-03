@@ -44,6 +44,7 @@ additional (joint) profit :math:`p_{ij}` is obtained.
    examples.rst
    conventions.rst
    developing.rst
+   datasets.rst
    qmkpy.rst
 
 
