@@ -9,12 +9,20 @@ from . import qmkp
 
 def save_problem_numpy(fname: Union[str, bytes, os.PathLike],
                        problem):
-    """
+    """Save a QMKProblem using Numpys npz format
+
+    Save a QMKProblem instance using the compressed npz format. This only saves
+    the :attr:`problem.profits`, :attr:`problem.weights`, and
+    :attr:`problem.capacities` arrays.
+
 
     See Also
     --------
     :meth:`.load_problem_numpy()`
         For loading a saved model.
+
+    :meth:`numpy.savez_compressed()`
+        For details on the ``.npz`` format.
 
 
     Parameters
@@ -22,7 +30,7 @@ def save_problem_numpy(fname: Union[str, bytes, os.PathLike],
     fname : str or PathLike
         Filepath of the model to be saved at
 
-    problem : QMKProblem
+    problem : qmkpy.QMKProblem
         Problem instance to be saved
 
 
@@ -30,14 +38,39 @@ def save_problem_numpy(fname: Union[str, bytes, os.PathLike],
     -------
     None
     """
+
     np.savez_compressed(fname,
                         profits=problem.profits,
                         weights=problem.weights,
                         capacities=problem.capacities)
 
 def load_problem_numpy(fname: str):
+    """Load a previously stored QMKProblem instance from the Numpy format
+
+    This function allows loading a QMKProblem from a compressed ``.npz`` file,
+    which was created by the :meth:`qmkpy.io.save_problem_numpy()` method.
+
+    See Also
+    --------
+    :meth:`qmkpy.io.save_problem_numpy()`
+        For saving a model in the Numpy format.
+
+    :meth:`numpy.load()`
+        For details on loading the ``.npz`` format.
+
+
+    Parameters
+    ----------
+    fname : str or PathLike
+        Filepath of the saved model
+
+
+    Returns
+    -------
+    problem : qmkpy.QMKProblem
+        Loaded problem instance
     """
-    """
+
     _ext = os.path.splitext(fname)[1]
     if not _ext == ".npz":
         fname = fname + ".npz"
@@ -45,14 +78,21 @@ def load_problem_numpy(fname: str):
     problem = qmkp.QMKProblem(**_arrays)
     return problem
 
+
 def save_problem_pickle(fname: Union[str, bytes, os.PathLike],
                         problem):
-    """
+    """Save a QMKProblem using the Python Pickle format
+
+    Save a QMKProblem object using the Python pickle library. By this, the
+    whole object is stored in a binary format.
 
     See Also
     --------
-    :meth:`.load_problem_pickle()`
+    :meth:`qmkpy.io.load_problem_pickle()`
         For loading a saved model.
+
+    :func:`pickle.dump()`
+        For details on the underlying pickling function.
 
 
     Parameters
@@ -60,7 +100,7 @@ def save_problem_pickle(fname: Union[str, bytes, os.PathLike],
     fname : str or PathLike
         Filepath of the model to be saved at
 
-    problem : QMKProblem
+    problem : qmkpy.QMKProblem
         Problem instance to be saved
 
 
@@ -68,15 +108,43 @@ def save_problem_pickle(fname: Union[str, bytes, os.PathLike],
     -------
     None
     """
+
     with open(fname, 'wb') as out_file:
         pickle.dump(problem, out_file)
 
 def load_problem_pickle(fname: Union[str, bytes, os.PathLike]):
+    """Load a previously stored QMKProblem instance from the Pickle format
+
+    This function allows loading a QMKProblem object from a Python pickled
+    object file.
+
+    **Caution:** All warnings as for the regular :func:`pickle.load` apply!
+
+    See Also
+    --------
+    :meth:`qmkpy.io.save_problem_pickle()`
+        For saving a model in the Pickle format.
+
+    :meth:`pickle.load()`
+        For details on loading a pickled object.
+
+
+    Parameters
+    ----------
+    fname : str or PathLike
+        Filepath of the saved model
+
+
+    Returns
+    -------
+    problem : qmkpy.QMKProblem
+        Loaded problem instance
     """
-    """
+
     with open(fname, 'rb') as obj_file:
         problem = pickle.load(obj_file)
     return problem
+
 
 def save_problem_txt(fname: Union[str, bytes, os.PathLike],
                      qmkp, sep: str = "\t", name: Optional[str] = None):
@@ -87,6 +155,67 @@ def save_problem_txt(fname: Union[str, bytes, os.PathLike],
     The original description can be found at
     https://cedric.cnam.fr/~soutif/QKP/format.html.
 
+    The file format is as follows:
+      
+      1. The first line provides a name/reference of the problem
+      2. The second line specifies the number of items
+      3. The third line specifies the number of knapsacks
+      4. The fourth line is blank to separate the meta information from the
+         rest
+      5. The fifth line contains the linear profits (main diagonal elements of
+         the profit matrix) separated by ``sep``.
+      6. The next lines contain the upper triangular part of the profit matrix
+         (i.e., :math:`p_{ij}`).
+      7. Blank line separating profits from the rest
+      8. Weights :math:`w_{i}` of the items, separated by ``sep``.
+      9. Blank line separating weights and capacities
+      10. Capacities :math:`c_{u}` of the knapsacks, separated by ``sep``.
+
+    For the example with parameters
+    
+    .. math::
+    
+        P = \\begin{pmatrix}1 & 2 & 3\\\\ 2 & 4 & 5\\\\ 3 & 5 & 6\\end{pmatrix},
+        \\quad
+        w = \\begin{pmatrix}10\\\\ 20\\\\ 30\\end{pmatrix},
+        \\quad
+        c = \\begin{pmatrix}5 \\\\ 8\\\\ 1\\\\ 9\\\\ 2\\end{pmatrix}
+
+    the output-file looks as follows
+
+    .. code-block::
+        
+        Name of the Problem
+        3
+        5
+
+        1   4   6
+        2   3
+        5
+
+        10  20  30
+
+        5   8   1   9   2
+
+
+    See Also
+    --------
+    :meth:`qmkpy.io.load_problem_txt()`
+        For loading a saved model.
+
+
+    Parameters
+    ----------
+    fname : str or PathLike
+        Filepath of the model to be saved at
+
+    problem : qmkpy.QMKProblem
+        Problem instance to be saved
+
+
+    Returns
+    -------
+    None
     """
     profits = qmkp.profits
     weights = qmkp.weights
@@ -126,10 +255,30 @@ def save_problem_txt(fname: Union[str, bytes, os.PathLike],
     
 
 def load_problem_txt(fname: Union[str, bytes, os.PathLike], sep:str = "\t"):
-    """Load a QMKProblem instance from text form
+    """Load a previously stored QMKProblem instance from the text format
 
-    ...
+    This function loads a QMKProblem instance from a text file according to the
+    format specified in :meth:`qmkpy.io.save_problem_txt()`.
+
+
+    See Also
+    --------
+    :meth:`qmkpy.io.save_problem_txt()`
+        For saving a model in the text format.
+
+
+    Parameters
+    ----------
+    fname : str or PathLike
+        Filepath of the saved model
+
+
+    Returns
+    -------
+    problem : qmkpy.QMKProblem
+        Loaded problem instance
     """
+
     with open(fname, 'r') as _pf:
         content = _pf.readlines()
     content = [_c.strip() for _c in content]
