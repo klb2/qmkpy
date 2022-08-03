@@ -79,7 +79,7 @@ def load_problem_pickle(fname: Union[str, bytes, os.PathLike]):
     return problem
 
 def save_problem_txt(fname: Union[str, bytes, os.PathLike],
-                     qmkp, sep: str = "\t"):
+                     qmkp, sep: str = "\t", name: Optional[str] = None):
     """Save a QMKProblem instance in text form
 
     Save a QMKProblem instance in text form inspired by the format established
@@ -91,8 +91,39 @@ def save_problem_txt(fname: Union[str, bytes, os.PathLike],
     profits = qmkp.profits
     weights = qmkp.weights
     capacities = qmkp.capacities
-    pass
 
+    num_items = len(weights)
+    num_ks = len(capacities)
+    if name is None:
+        name = f"qmkp_{num_items:d}_{num_ks:d}_{np.random.randint(0, 1000):03d}"
+
+    _blank = ""
+    content = [name, f"{num_items:d}", f"{num_ks:d}", _blank]
+
+    _lin_prof = np.diag(profits)
+    lin_prof = sep.join(str(x) for x in _lin_prof)
+    content.append(lin_prof)
+
+    idx_prof_triu = np.triu_indices(num_items, 1)
+    _triu_prof = profits[idx_prof_triu]
+    for k in range(num_items-1):
+        _start_idx = int(k*num_items - k*(k+1)/2)
+        _row = _triu_prof[_start_idx:_start_idx+(num_items-1-k)]
+        row = sep.join(str(x) for x in _row)
+        content.append(row)
+
+    content.append(_blank)
+    _weights = sep.join(str(x) for x in weights)
+    content.append(_weights)
+
+    content.append(_blank)
+    _capac = sep.join(str(x) for x in capacities)
+    content.append(_capac)
+
+    content = [x + "\n" for x in content]
+    with open(fname, 'w') as out_file:
+        out_file.writelines(content)
+    
 
 def load_problem_txt(fname: Union[str, bytes, os.PathLike], sep:str = "\t"):
     """Load a QMKProblem instance from text form

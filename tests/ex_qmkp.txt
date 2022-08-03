@@ -1,4 +1,4 @@
-Reference Name of the Problem
+Reference Problem
 4
 5
 
@@ -7,6 +7,6 @@ Reference Name of the Problem
 8	9
 10
 
-10 20 30 40
+10	20	30	40
 
 5	8	1	9	2

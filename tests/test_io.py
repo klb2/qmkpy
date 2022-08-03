@@ -29,5 +29,5 @@ def test_save_txt(tmp_path):
 
     problem = qmkp.QMKProblem(profits, weights, capacities)
     outfile = os.path.join(tmp_path, f"save.txt")
-    io.save_problem_txt(outfile, problem)
+    io.save_problem_txt(outfile, problem, name="Reference Problem")
     assert filecmp.cmp(outfile, EX_TXT, shallow=False)
