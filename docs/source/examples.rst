@@ -1,5 +1,5 @@
-Examples
-========
+Getting Started
+===============
 In the following, a few simple examples are shown.
 
 
