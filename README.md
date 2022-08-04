@@ -3,6 +3,7 @@
 [![Pytest](https://github.com/klb2/qmkpy/actions/workflows/pytest.yml/badge.svg)](https://github.com/klb2/qmkpy/actions/workflows/pytest.yml)
 [![codecov](https://codecov.io/gh/klb2/qmkpy/branch/master/graph/badge.svg?token=NFBF1ZZEXQ)](https://codecov.io/gh/klb2/qmkpy)
 [![Read the docs status](https://readthedocs.org/projects/qmkpy/badge/?version=latest&style=flat)](https://qmkpy.readthedocs.io)
+[![PyPI version](https://badge.fury.io/py/qmkpy.svg)](https://badge.fury.io/py/qmkpy)
 
 
 This software package primarily aims at research in the areas of operations
