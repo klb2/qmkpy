@@ -10,7 +10,7 @@ setup(
     version = __version__,
     author = __author__,
     author_email = __email__,
-    description = "Implementation of the quadradtic multiple knapsack problem",
+    description = "Framework for solving the Quadratic Multiple Knapsack Problem (QMKP)",
     keywords = ["quadratic multiple knapsack problem", "knapsack problem",
                 "operations research"],
     long_description=long_desc,

@@ -28,6 +28,15 @@ knapsacks. If item $i$ is assigned to a knapsack, it yields the profit $p_i$.
 If item $j$ (with $j\neq i$ ) is assigned _to the same_ knapsack, we get the
 additional joint profit $p_{ij}$.
 
+## Features
+
+- Quick and simple creation of QMKP instances
+- Saving/loading of problem instances for a simple creation and use of
+  reference datasets
+- Easy implementation of novel algorithms to solve the QMKP
+- High reproducibility and direct comparison between different algorithms
+
+
 ## Installation
 The package can easily be installed via pip.
 Either from the PyPI
