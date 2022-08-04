@@ -298,20 +298,24 @@ def round_robin(profits: np.array, weights: Iterable[float],
 
     if starting_assignment is None:
         starting_assignment = np.zeros((num_items, num_ks))
-    if order_ks is None or len(order_ks) == 0:
-        order_ks = np.arange(num_ks)
-    if not set(order_ks).issubset(set(range(num_ks))):
-        raise ValueError("The order of the knapsacks must only contain indices of the knapsacks, i.e., every element needs to be an integer from {0, 1, ..., K-1}.")
-
-    start_load = weights @ starting_assignment
-    remain_capac = capacities - start_load
 
     if not is_binary(starting_assignment):
         raise ValueError("The starting assignment needs to be a binary matrix")
     if not np.all(np.shape(starting_assignment) == (num_items, num_ks)):
         raise ValueError("The shape of the starting assignment needs to be num_items x num_knapsacks")
+
+    if order_ks is None or len(order_ks) == 0:
+        order_ks = np.arange(num_ks)
+    if not set(order_ks).issubset(set(range(num_ks))):
+        raise ValueError("The order of the knapsacks must only contain indices of the knapsacks, i.e., every element needs to be an integer from {0, 1, ..., K-1}.")
+
+
+    start_load = weights @ starting_assignment
+    remain_capac = capacities - start_load
+
     if np.any(remain_capac < 0):
         raise ValueError("The starting assignment already violates the weight capacity limit")
+
 
     assignments = np.copy(starting_assignment)
     densities, unassigned = value_density(profits, weights, starting_assignment,

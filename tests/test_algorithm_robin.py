@@ -43,6 +43,7 @@ def test_rr_change_with_starting():
                          [[1, 0], [0, 0], [1, 0], [0, 0]],
                          [[1, 0, 0, 0], [0, 0, 0, 0], [1, 0, 0, 0], [0, 0, 0, 0]],
                          [[0, 0, 1], [0, 0, 1], [1, 0, 0], [0, 0, 1]],
+                         [[0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0]],
                          ))
 def test_rr_feasibility_starting_assignment(starting_assignment):
     profits = np.array([[1, 1, 2, 3],
@@ -89,4 +90,4 @@ def test_rr_order_ks_error(order_ks):
     capacities = np.random.randint(5, 12, size=(num_knapsacks,))
     with pytest.raises(ValueError):
         solution = round_robin(profits, weights, capacities,
-                            order_ks=order_ks)
+                               order_ks=order_ks)
