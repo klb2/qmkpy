@@ -22,10 +22,11 @@ setup(
         'Source Code': 'https://github.com/klb2/qmkpy',
         },
     classifiers = [
-        "Programming Language :: Python :: 3",
         "Intended Audience :: Science/Research",
         "Intended Audience :: Telecommunications Industry",
         "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+        "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3 :: Only",
         "Topic :: Scientific/Engineering",
         ],
     packages=find_packages(),
