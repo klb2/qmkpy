@@ -29,9 +29,7 @@ jobs:
         pip install pytest pytest-cov
         pip install .
     - name: Test with pytest
-      working-directory: tests
       run: |
-        pytest --cov --cov-report=xml
+        pytest tests/ --cov --cov-report=xml
     - name: Upload coverage reports to Codecov with GitHub Action
-      working-directory: tests
       uses: codecov/codecov-action@v3
