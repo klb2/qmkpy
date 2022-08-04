@@ -13,9 +13,9 @@ def constructive_procedure(profits: np.array,
                            starting_assignment: np.array = None) -> np.array:
     """Constructive procedure that completes a starting assignment
 
-    This constructive procedure is based on Algorithm 1 from (Aider, Gacem,
-    Hifi, 2022) and the greedy heuristic in (Hiley, Julstrom, 2006). It is a
-    greedy algorithm that completes a partial solution of the QMKP.
+    This constructive procedure is based on Algorithm 1 from [AGH22]_ and the
+    greedy heuristic in [HJ06]_. It is a greedy algorithm that completes a
+    partial solution of the QMKP.
 
 
     Parameters
@@ -115,9 +115,8 @@ def fcs_procedure(profits: np.array,
     """Implementation of the fix and complete solution (FCS) procedure
 
     This fix and complete solution (FCS) procedure is based on Algorithm 2 from
-    (Aider, Gacem, Hifi, 2022). It is basically a stochastic hill-climber
-    wrapper around the constructive procedure :meth:`constructive_procedure`
-    (also see (Hiley, Julstrom, 2006)).
+    [AGH22]_. It is basically a stochastic hill-climber wrapper around the
+    constructive procedure :meth:`constructive_procedure` (also see [HJ06]_).
 
 
     Parameters

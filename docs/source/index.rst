@@ -35,6 +35,7 @@ When assigning item :math:`i` to a knapsack, it yields the profit :math:`p_i`.
 When assigning item :math:`j` (with :math:`j\neq i`) to the same knapsack, the
 additional (joint) profit :math:`p_{ij}` is obtained.
 
+For a basic overview on knapsack problems, see [KPP04]_.
 
 .. toctree::
    :maxdepth: 2
@@ -46,6 +47,7 @@ additional (joint) profit :math:`p_{ij}` is obtained.
    developing.rst
    datasets.rst
    qmkpy.rst
+   references.rst
 
 
 

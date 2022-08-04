@@ -1,8 +1,9 @@
 Implementing a Novel Algorithm
 ==============================
 
-**TL;DR**
-Your function needs to look like: ``func(profits, weights, capacities, *args)``
+.. note::
+    **TL;DR:**  
+    Your function needs to look like: ``func(profits, weights, capacities, *args)``
 
 
 If you want to implement and test a novel solution algorithm for the QMKP, you
