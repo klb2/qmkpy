@@ -26,9 +26,11 @@ jobs:
         python -V
         python -m pip install --upgrade pip
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-        pip install pytest
+        pip install pytest pytest-cov
         pip install .
     - name: Test with pytest
       working-directory: tests
       run: |
-        pytest
+        pytest --cov
+    - name: Upload coverage reports to Codecov with GitHub Action
+      uses: codecov/codecov-action@v3
