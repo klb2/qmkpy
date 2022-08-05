@@ -3,7 +3,7 @@ Implementing a Novel Algorithm
 
 .. note::
     **TL;DR:**  
-    Your function needs to look like: ``func(profits, weights, capacities, *args)``
+    Your function needs to be callable as: ``func(profits, weights, capacities, *args)``
 
 
 If you want to implement and test a novel solution algorithm for the QMKP, you
@@ -47,9 +47,9 @@ The above algorithm could be implemented as follows
 It should be emphasized that you should **not** modify any of the input arrays,
 e.g., ``capacities`` inplace, since this could lead to unintended consequences.
 
-Testing the Algorithm
+Using the Algorithm
 *********************
-The newly implemented algorithm can then easily be tested as follows.
+The newly implemented algorithm can then easily be used as follows.
 
 .. code-block:: python
    :linenos:
@@ -73,3 +73,20 @@ The newly implemented algorithm can then easily be tested as follows.
     print(assignments)
     print(total_profit)
 
+
+Contributing a New Algorithm to the Package
+-------------------------------------------
+When you feel that your algorithm should be added to the QMKPy package, please
+follow the following steps:
+
+1. Place your code in the :mod:`qmkpy.algorithms` module, i.e., in the
+   ``qmkpy/algorithms.py`` file.
+2. Make sure that you added documentation in form of a docstring. This should
+   also include possible references to literature, if the algorithm is taken
+   from any published work.
+3. Make sure that all unit tests pass. In order to do this, add your algorithm
+   to the ``SOLVERS`` list in the test file ``tests/test_algorithms.py``.
+   Additionally, you should create a new test file
+   ``tests/test_algorithm_<your_algo>.py`` which includes tests that are
+   specific to your algorithm, e.g., testing different parameter
+   constellations. You can run all tests using the ``pytest`` command.
