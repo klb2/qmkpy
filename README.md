@@ -51,3 +51,12 @@ cd qmkpy
 git checkout dev  # optional for the latest development version
 pip3 install .
 ```
+
+## Usage
+In order to test the installation and get an idea of how to use the QMKPy
+package, you can take a look at the `examples/` directory.
+It contains some standalone scripts that can be executed and perform some
+simple tasks.
+
+More detailed descriptions of the implemented algorithms and a documentation of
+the API can be found in the [documentation](https://qmkpy.readthedocs.io).
