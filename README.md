@@ -1,4 +1,4 @@
-# QMKPy: A Python Framework for Solving Quadratic Multiple Knapsack Problems
+# QMKPy: A Python Framework for the Quadratic Multiple Knapsack Problem
 
 [![Pytest](https://github.com/klb2/qmkpy/actions/workflows/pytest.yml/badge.svg)](https://github.com/klb2/qmkpy/actions/workflows/pytest.yml)
 [![codecov](https://codecov.io/gh/klb2/qmkpy/branch/master/graph/badge.svg?token=NFBF1ZZEXQ)](https://codecov.io/gh/klb2/qmkpy)
