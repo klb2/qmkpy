@@ -275,3 +275,50 @@ def get_empty_knapsacks(assignments: Union[np.array, Iterable[int]],
     else:
         raise NotImplementedError("Only the binary and chromosome form are accepted.")
     return empty_ks
+
+
+def get_remaining_capacities(weights: Iterable[float],
+                             capacities: Iterable[float],
+                             assignments: Union[np.array, Iterable[int]]):
+    """Return the remaining weight capacities of the knapsacks
+
+    Returns the remaining weight capacities of the knapsacks for given
+    assignments. The function does *not* raise an error when a weight
+    constraint is violated but will return a negative remaining capacity in
+    this case.
+
+
+    Parameters
+    ----------
+    weights : list of float
+        List of weights :math:`w_i` of the :math:`N` items that can be
+        assigned.
+
+    capacities : list of float
+        Capacities of the knapsacks. The number of knapsacks :math:`K` is
+        determined as ``K=len(capacities)``.
+
+    assignments : np.array or list of int
+        Either a binary matrix of size :math:`N\\times K` which represents the
+        assignments of items to knapsacks. If :math:`a_{ij}=1`, element
+        :math:`i` is assigned to knapsack :math:`j`.
+        Or assignments in the chromosome form, which is a list of length
+        :math:`N` where :math:`c_{i}=k` means that item :math:`i` is assigned
+        to knapsack :math:`k`. If the item is not assigned, we set
+        :math:`c_{i}=-1`.
+
+    Returns
+    -------
+    remaining_capacities : list of float
+        List of the remaining capacities. Can be negative, if a knapsack is
+        overloaded.
+    """
+
+    assignments = np.array(assignments)
+    if np.ndim(assignments) == 1:
+        num_ks = len(capacities)
+        assignments = assignment_from_chromosome(assignments, num_ks)
+
+    load = weights @ assignments
+    remain_capac = capacities - load
+    return remain_capac

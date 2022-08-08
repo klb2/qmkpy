@@ -22,11 +22,11 @@ class QMKProblem:
         :math:`p_i` corresponds to the main diagonal elements, i.e.,
         :math:`p_i = p_{ii}`.
 
-    weights : list
+    weights : list of float
         List of weights :math:`w_i` of the :math:`N` items that can be
         assigned.
 
-    capacities : list
+    capacities : list of float
         Capacities of the knapsacks. The number of knapsacks :math:`K` is
         determined as ``K=len(capacities)``.
 

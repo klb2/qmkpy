@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Add new utility functions
   - `util.get_unassigned_items`
   - `util.get_empty_knapsacks`
+  - `util.get_remaining_capacities`
 
 
 ## [1.0.0] - 2022-08-04

@@ -5,7 +5,8 @@ from qmkpy import value_density, total_profit_qmkp
 from qmkpy.util import (chromosome_from_assignment, 
                         assignment_from_chromosome,
                         get_unassigned_items,
-                        get_empty_knapsacks)
+                        get_empty_knapsacks,
+                        get_remaining_capacities)
 from qmkpy import checks
 
 
@@ -213,3 +214,24 @@ def test_get_empty_knapsacks_chromosome_wrong_num_ks(assignments, num_ks, expect
 def test_get_empty_knapsacks_not_implemented(assignments):
     with pytest.raises(NotImplementedError):
         empty_ks = get_empty_knapsacks(assignments)
+
+
+@pytest.mark.parametrize("weights,capacities,assignments,expected",
+                         (([1, 2, 3], [2, 2], [[0, 1], [1, 0], [0, 0]], [0, 1]),
+                          ([1, 2, 3], [2, 2], [[0, 1], [0, 0], [1, 0]], [-1, 1]),
+                          ([2, 2], [5, 6, 4], [[0, 1, 0], [0, 0, 0]], [5, 4, 4]),
+                          ([4, 5, 6], [1, 2, 3], [[0, 0, 0], [0, 0, 0], [0, 0, 0]], [1, 2, 3]),
+                         ))
+def test_get_remaining_capacities(weights, capacities, assignments, expected):
+    remain_capac = get_remaining_capacities(weights, capacities, assignments)
+    assert np.all(remain_capac == expected)
+
+@pytest.mark.parametrize("weights,capacities,assignments,expected",
+                         (([1, 2, 3], [2, 2], [1, 0, -1], [0, 1]),
+                          ([1, 2, 3], [2, 2], [1, -1, 0], [-1, 1]),
+                          ([2, 2], [5, 6, 4], [-1, 1], [5, 4, 4]),
+                          ([4, 5, 6], [1, 2, 3], [-1, -1, -1], [1, 2, 3]),
+                         ))
+def test_get_remaining_capacities_chromosome(weights, capacities, assignments, expected):
+    remain_capac = get_remaining_capacities(weights, capacities, assignments)
+    assert np.all(remain_capac == expected)
