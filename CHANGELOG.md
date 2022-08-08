@@ -12,6 +12,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   - `util.get_unassigned_items`
   - `util.get_empty_knapsacks`
   - `util.get_remaining_capacities`
+- Add new check function
+  - `checks.is_symmetric_profits`
+- Update documentation about datasets and add example
+
+### Fixed
+- Fix docstrings
 
 
 ## [1.0.0] - 2022-08-04
