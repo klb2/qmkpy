@@ -2,7 +2,10 @@ import numpy as np
 import pytest
 
 from qmkpy import value_density, total_profit_qmkp
-from qmkpy.util import chromosome_from_assignment, assignment_from_chromosome
+from qmkpy.util import (chromosome_from_assignment, 
+                        assignment_from_chromosome,
+                        get_unassigned_items,
+                        get_empty_knapsacks)
 from qmkpy import checks
 
 
@@ -140,3 +143,73 @@ def test_assignment_chromosome_swap(assignments, chromosome):
     _chromosome = chromosome_from_assignment(assignments)
     _assign = assignment_from_chromosome(_chromosome, num_ks)
     assert np.all(_assign == assignments) and np.all(_chromosome == chromosome)
+
+
+@pytest.mark.parametrize("assignments,expected",
+                         (([-1, 2, 1, 0], [0]),
+                          ([0, 1, 2, 3, 4], []),
+                          ([0, -1, 2, -1, 4], [1, 3]),
+                          ([[0, 0], [0, 1], [1, 0]], [0]),
+                          ([[0, 0, 1], [0, 0, 1], [1, 0, 0]], []),
+                          ([[0, 0, 0], [0, 0, 0], [0, 0, 0]], [0, 1, 2]),
+                         ))
+def test_get_unassigned_items(assignments, expected):
+    unassigned_items = get_unassigned_items(assignments)
+    assert np.all(unassigned_items == expected)
+
+@pytest.mark.parametrize("assignments",
+                         ([[[0, 0], [0, 1]], [[1, 0], [1, 1]]],
+                          [[[]]],
+                         ))
+def test_get_unassigned_items_not_implemented(assignments):
+    with pytest.raises(NotImplementedError):
+        unassigned_items = get_unassigned_items(assignments)
+
+
+@pytest.mark.parametrize("assignments,expected",
+                         (([[0, 0], [0, 1], [1, 0]], []),
+                          ([[0, 0, 1], [0, 0, 1], [1, 0, 0]], [1]),
+                          ([[0, 0, 0], [0, 0, 0], [0, 0, 0]], [0, 1, 2]),
+                          ([[0, 0], [0, 1], [0, 0]], [0]),
+                         ))
+def test_get_empty_knapsacks_binary(assignments, expected):
+    empty_ks = get_empty_knapsacks(assignments)
+    assert np.all(empty_ks == expected)
+
+@pytest.mark.parametrize("assignments,num_ks,expected",
+                         (([-1, 2, 1, 0], 4, [3]),
+                          ([0, 1, 2, 3, 4], 5, []),
+                          ([0, -1, 2, -1, 4], 6, [1, 3, 5]),
+                          ([0, -1, 2, -1, 4], 5, [1, 3]),
+                         ))
+def test_get_empty_knapsacks_chromosome(assignments, num_ks, expected):
+    empty_ks = get_empty_knapsacks(assignments, num_ks)
+    assert np.all(empty_ks == expected)
+
+@pytest.mark.parametrize("assignments,expected",
+                         (([-1, 2, 1, 0], [3]),
+                          ([0, 1, 2, 3, 4], []),
+                          ([0, -1, 2, -1, 4], [1, 3, 5]),
+                          ([0, -1, 2, -1, 4], [1, 3]),
+                         ))
+def test_get_empty_knapsacks_chromosome_fail_ks(assignments, expected):
+    with pytest.raises(TypeError):
+        empty_ks = get_empty_knapsacks(assignments)
+
+@pytest.mark.parametrize("assignments,num_ks,expected",
+                         (([-1, 2, 1, 0], 2, [3]),
+                          ([0, 1, 2, 3, 4], 2, []),
+                          ([0, -1, 2, -1, 4], 4, [1, 3, 5]),
+                          ([0, -1, 2, -1, 4], 1, [1, 3]),
+                         ))
+def test_get_empty_knapsacks_chromosome_wrong_num_ks(assignments, num_ks, expected):
+    with pytest.raises(ValueError):
+        empty_ks = get_empty_knapsacks(assignments, num_ks)
+
+@pytest.mark.parametrize("assignments",
+                         ([[[0, 0], [0, 1]], [[1, 0], [1, 1]]],
+                          [[[]]],
+                         ))
+def test_get_empty_knapsacks_not_implemented(assignments):
+    with pytest.raises(NotImplementedError):
+        empty_ks = get_empty_knapsacks(assignments)

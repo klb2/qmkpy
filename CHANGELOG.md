@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased]
 ### Added
 - Add example scripts to repository
+- Add new utility functions
+  - `util.get_unassigned_items`
+  - `util.get_empty_knapsacks`
 
 
 ## [1.0.0] - 2022-08-04

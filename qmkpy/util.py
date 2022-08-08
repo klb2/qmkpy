@@ -170,7 +170,7 @@ def assignment_from_chromosome(chromosome: Iterable[int], num_ks: int) -> np.arr
 
     Parameters
     ----------
-    chromosome : np.array
+    chromosome : np.array or list of int
         Chromosome version of ``assignments``, which is a list of length
         :math:`N` where :math:`c_{i}=k` means that item :math:`i` is assigned
         to knapsack :math:`k`. If the item is not assigned, we set
@@ -194,3 +194,84 @@ def assignment_from_chromosome(chromosome: Iterable[int], num_ks: int) -> np.arr
     _assigned_items = np.argwhere(chromosome >= 0)
     assignments[_assigned_items, chromosome[_assigned_items]] = 1
     return assignments
+
+def get_unassigned_items(assignments: Union[np.array, Iterable[int]]) -> Iterable[int]:
+    """Return the list of unassigned items
+
+    Return the list of unassigned items (as their indices) from a given
+    assignment. It can be either in the binary matrix form or in the
+    chromosome form.
+
+    Parameters
+    ----------
+    assignments : np.array or list of int
+        Either a binary matrix of size :math:`N\\times K` which represents the
+        assignments of items to knapsacks. If :math:`a_{ij}=1`, element
+        :math:`i` is assigned to knapsack :math:`j`.
+        Or assignments in the chromosome form, which is a list of length
+        :math:`N` where :math:`c_{i}=k` means that item :math:`i` is assigned
+        to knapsack :math:`k`. If the item is not assigned, we set
+        :math:`c_{i}=-1`.
+
+    Returns
+    -------
+    unassigned_items : list of int
+        List of the indices of the unassigned items.
+    """
+
+    assignments = np.array(assignments)
+    if np.ndim(assignments) == 1:
+        unassigned_items = np.where(assignments == -1)[0]
+    elif np.ndim(assignments) == 2:
+        unassigned_items = ~np.any(assignments, axis=1)
+        unassigned_items = np.where(unassigned_items)[0]
+    else:
+        raise NotImplementedError("Only the binary and chromosome form are accepted.")
+    return unassigned_items
+
+def get_empty_knapsacks(assignments: Union[np.array, Iterable[int]],
+                        num_ks: Optional[int] = None) -> Iterable[int]:
+    """Return the list of empty knapsacks
+
+    Return the list of empty knapsacks (as their indices) from a given
+    assignment. An empty knapsack is one without any assigned item. The
+    assignments can be either in the binary matrix form or in the chromosome
+    form. If the chromosome form is used, the total number of knapsacks needs
+    to be additionally provided.
+
+    Parameters
+    ----------
+    assignments : np.array or list of int
+        Either a binary matrix of size :math:`N\\times K` which represents the
+        assignments of items to knapsacks. If :math:`a_{ij}=1`, element
+        :math:`i` is assigned to knapsack :math:`j`.
+        Or assignments in the chromosome form, which is a list of length
+        :math:`N` where :math:`c_{i}=k` means that item :math:`i` is assigned
+        to knapsack :math:`k`. If the item is not assigned, we set
+        :math:`c_{i}=-1`.
+
+    num_ks : int (optional)
+        Total number :math:`K` of knapsacks. This only needs to provided, if
+        the assignments are given in the chromosome form.
+
+    Returns
+    -------
+    empty_ks : list of int
+        List of the indices of the empty knapsacks.
+    """
+
+    assignments = np.array(assignments)
+    if np.ndim(assignments) == 1:
+        if not isinstance(num_ks, int):
+            raise TypeError("If the assignments are given in the chromosome form, the total number of knapsacks is required.")
+        if np.max(assignments) >= num_ks:
+            raise ValueError("The number of total knapsacks is too small for the given assignment chromosome.")
+        _all_ks = set(range(num_ks))
+        empty_ks = _all_ks.difference(assignments)
+        empty_ks = list(empty_ks)
+    elif np.ndim(assignments) == 2:
+        empty_ks = ~np.any(assignments, axis=0)
+        empty_ks = np.where(empty_ks)[0]
+    else:
+        raise NotImplementedError("Only the binary and chromosome form are accepted.")
+    return empty_ks
