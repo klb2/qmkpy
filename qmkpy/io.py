@@ -212,6 +212,14 @@ def save_problem_txt(fname: Union[str, bytes, os.PathLike],
     problem : qmkpy.QMKProblem
         Problem instance to be saved
 
+    sep : str
+        Separator string that is used to separate the numbers in the file.
+
+    name : str (optional)
+        Optional name of the problem that is used as the first line of the
+        output file. If it is ``None``, it defaults to
+        ``qmkp_{num_items:d}_{num_ks:d}_{np.random.randint(0, 1000):03d}``.
+
 
     Returns
     -------
@@ -271,6 +279,9 @@ def load_problem_txt(fname: Union[str, bytes, os.PathLike], sep:str = "\t"):
     ----------
     fname : str or PathLike
         Filepath of the saved model
+
+    sep : str
+        Separator string that is used to separate the numbers in the file.
 
 
     Returns
