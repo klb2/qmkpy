@@ -61,3 +61,6 @@ simple tasks.
 
 More detailed descriptions of the implemented algorithms and a documentation of
 the API can be found in the [documentation](https://qmkpy.readthedocs.io).
+
+A collection of reference datasets can be found at
+[https://github.com/klb2/qmkpy-datasets](https://github.com/klb2/qmkpy-datasets).

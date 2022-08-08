@@ -6,6 +6,8 @@ easily generate datasets of reference problems and test your algorithms against
 
 Especially when benchmarking your novel algorithm against commonly used
 reference datasets, this will allow a simple reproducibility.
+A collection of some reference datasets can be found at
+https://github.com/klb2/qmkpy-datasets.
 
 In the following, an example of how a repository for a research paper could
 look like, is presented.
