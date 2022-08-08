@@ -135,3 +135,56 @@ def is_feasible_solution(assignments: np.array,
             raise ValueError(error_msg)
         else:
             return False
+
+
+def is_symmetric_profits(profits: np.array,
+                         raise_error: bool = False) -> bool:
+    """Check whether the profit matrix is symmetric.
+
+    This function performs a check whether the profit matrix :math:`P` is
+    symmetric. This is expected for the QMKP.
+
+    By default, the function returns ``True`` if the matrix is symmetric and
+    ``False`` otherwise.
+    When ``raise_error`` is set to ``True``, a :class:`ValueError` is raised
+    instead.
+
+
+    Parameters
+    ----------
+    profits : np.array
+        Symmetric matrix of size :math:`N\\times N` that contains the (joint)
+        profit values :math:`p_{ij}`. The profit of the single items
+        :math:`p_i` corresponds to the main diagonal elements, i.e.,
+        :math:`p_i = p_{ii}`.
+
+    raise_error : bool, optional
+        If ``raise_error`` is ``False``, the function returns a ``bool``,
+        that states whether the solution is feasible.
+        If ``raise_error`` is ``True``, the function raises a ``ValueError``
+        instead.
+
+    Returns
+    -------
+    bool
+        Indication if the solution is feasible (``True``) or not (``False``)
+
+    Raises
+    ------
+    ValueError
+        This is raised when ``raise_error`` is ``True`` and the matrix is not
+        symmetric. It can also be raised when the provided ``profits`` is not a
+        square matrix.
+    """
+
+    profits = np.array(profits)
+    if np.ndim(profits) != 2:
+        raise ValueError("The profits argument needs to be a 2D matrix.")
+    _row_p, _cols_p = np.shape(profits)
+    if not _row_p == _cols_p:
+        raise ValueError("The profit matrix is not square")
+
+    _symmetric = np.allclose(profits, profits.T)
+    if raise_error and not _symmetric:
+        raise ValueError("The profit matrix is not symmetric.")
+    return _symmetric
