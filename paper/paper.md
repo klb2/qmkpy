@@ -23,15 +23,15 @@ bibliography: paper.bib
 
 QMKPy provides a Python framework for modeling and solving the quadratic
 multiple knapsack problem (QMKP).
-It primarily aims at researchers who develop new solution algorithms for the
+It is primarily aimed at researchers who develop new solution algorithms for the
 QMKP. 
 However, the package also already includes implementations of established
 algorithms for those who only need to solve a QMKP as part of their research.
 
 The QMKP is a type of knapsack problem which has first been analyzed by
-[@Hiley2006].
+@Hiley2006.
 For a basic overview of multiple types of knapsack problems see, e.g.,
-[@Kellerer2004].
+@Kellerer2004.
 As in the regular multiple knapsack problem, the goal is to assign $N$ items
 with given weights $w_i$ and profit values $p_i$ to $K$ knapsacks with given
 weight capacities $c_u$, such that a total profit is maximized.
@@ -55,29 +55,29 @@ to knapsack $u$.
 
 The QMKP is a NP-hard optimization problem and therefore, there exists a
 variety of (heuristic) algorithms to find good solutions for it.
-While there already exist Python frameworks for the standard (multiple)
+While Python frameworks already exist for the standard (multiple)
 knapsack problem, they do not consider the _quadratic_ multiple knapsack
 problem.
-However, this type of problem arises in many areas of research. Besides the
+This type of problem arises in many areas of research. In addition to the
 typical problems in operations research, it also occurs in distributed
 computing [@Rust2020] and in the area of wireless communications
 [@Besser2022wiopt].
 
 For solving QMKPs, the software already implements multiple solution
 algorithms, including a _constructive procedure (CP)_ based on Algorithm 1 from
-[@Aider2022] and the greedy heuristic from [@Hiley2006]. A second algorithm
+@Aider2022 and the greedy heuristic from @Hiley2006. A second algorithm
 that is included is the _fix and complete solution (FCS) procedure_ from
-Algorithm 2 in [@Aider2022].
+Algorithm 2 in @Aider2022.
 
 However, most of the benefits of QMKPy appear when implementing a novel
 algorithm.
-Most notably are the following:
+The most notable are the following:
 
 - No additional overhead is required. Only a single function with the novel
   solution algorithm needs to be implemented.
-- Generic unit tests are available to make sure that your algorithm fulfills
+- Generic unit tests are available to make sure that the novel algorithm fulfills
   basic criteria.
-- The ability of loading and saving problem instances allows for a quick and
+- The ability of loading and saving problem instances allows for quick and
   easy testing of any algorithm against reference datasets. This enables
   reproducible research and creates a high degree of comparability between
   different algorithms. A collection of reference QMKP instances that can be
