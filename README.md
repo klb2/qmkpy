@@ -5,6 +5,7 @@
 [![Read the docs status](https://readthedocs.org/projects/qmkpy/badge/?version=latest&style=flat)](https://qmkpy.readthedocs.io)
 [![PyPI](https://img.shields.io/pypi/v/qmkpy)](https://pypi.org/project/qmkpy/)
 ![License](https://img.shields.io/github/license/klb2/qmkpy)
+[![status](https://joss.theoj.org/papers/7e886b9c686dc93f8ac85aef9f4fb5bd/status.svg)](https://joss.theoj.org/papers/7e886b9c686dc93f8ac85aef9f4fb5bd)
 
 
 This software package primarily aims at research in the areas of operations
