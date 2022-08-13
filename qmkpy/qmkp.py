@@ -43,6 +43,9 @@ class QMKProblem:
         assignments of items to knapsacks. If :math:`a_{ij}=1`, element
         :math:`i` is assigned to knapsack :math:`j`.
         This attribute is overwritten when calling :meth:`.solve()`.
+
+    name : str, optional
+        Optional name of the problem instance
     """
 
     def __init__(self,
@@ -51,7 +54,8 @@ class QMKProblem:
                  capacities: Iterable[float], 
                  algorithm: Optional[Callable] = None,
                  args: Optional[tuple] = None,
-                 assignments: Optional[np.array] = None):
+                 assignments: Optional[np.array] = None,
+                 name : Optional[str] = None):
         profits = np.array(profits)
         checks.check_dimensions(profits, weights)
         self.profits = profits
@@ -65,7 +69,20 @@ class QMKProblem:
         self.algorithm = algorithm
         self.args = args
 
-        self.assignments = np.zeros((len(self.weights), len(self.capacities)))
+        if assignments is None:
+            self.assignments = np.zeros((len(self.weights), len(self.capacities)))
+
+        self.name = name
+
+
+    def __eq__(self, other):
+        if not isinstance(other, QMKProblem):
+            return NotImplemented
+        _eq_profits = np.array_equal(self.profits, other.profits)
+        _eq_weights = np.array_equal(self.weights, other.weights)
+        _eq_capacities = np.array_equal(self.capacities, other.capacities)
+        return _eq_profits and _eq_weights and _eq_capacities
+
     
     def solve(self, algorithm: Optional[Callable] = None,
               args: Optional[tuple] = None) -> Tuple[np.array, float]:
@@ -146,6 +163,7 @@ class QMKProblem:
             - ``txt``: Save the arrays of the model using the text-based format
               established by Billionnet and Soutif. See also
               :meth:`qmkpy.io.save_problem_txt()`.
+            - ``json``: Save the arrays of the model using the JSON format.
 
         Returns
         -------
@@ -159,6 +177,8 @@ class QMKProblem:
             io.save_problem_pickle(fname, self)
         elif strategy == "txt":
             io.save_problem_txt(fname, self)
+        elif strategy == "json":
+            io.save_problem_json(fname, self)
         else:
             raise NotImplementedError("The strategy '%s' is not implemented.",
                                       strategy)
@@ -192,6 +212,7 @@ class QMKProblem:
               module
             - ``txt``: Save the arrays of the model using the text-based format
               established by Billionnet and Soutif.
+            - ``json``: Save the arrays of the model using the JSON format.
 
         Returns
         -------
@@ -206,6 +227,8 @@ class QMKProblem:
             problem = io.load_problem_pickle(fname)
         elif strategy == "txt":
             problem = io.load_problem_txt(fname)
+        elif strategy == "json":
+            problem = io.load_problem_json(fname)
         else:
             raise NotImplementedError("The strategy '%s' is not implemented.",
                                       strategy)

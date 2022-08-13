@@ -1,6 +1,7 @@
 import os
 from typing import Iterable, Any, Union, Callable, Optional, Tuple, NoReturn
 import pickle
+import json
 
 import numpy as np
 
@@ -215,9 +216,11 @@ def save_problem_txt(fname: Union[str, bytes, os.PathLike],
     sep : str
         Separator string that is used to separate the numbers in the file.
 
-    name : str (optional)
+    name : str ,optional
         Optional name of the problem that is used as the first line of the
-        output file. If it is ``None``, it defaults to
+        output file. If it is ``None``, it will first be checked whether the
+        attribute :attr:`problem.name` is set. If this is also ``None``, the
+        name defaults to
         ``qmkp_{num_items:d}_{num_ks:d}_{np.random.randint(0, 1000):03d}``.
 
 
@@ -331,5 +334,92 @@ def load_problem_txt(fname: Union[str, bytes, os.PathLike], sep:str = "\t"):
     capacities = np.fromstring(content[start_line_prof+num_items+3], sep=sep)
     assert len(capacities) == num_ks
 
-    problem = qmkp.QMKProblem(profits, weights, capacities)
+    problem = qmkp.QMKProblem(profits, weights, capacities, name=reference)
+    return problem
+
+
+def save_problem_json(fname: Union[str, bytes, os.PathLike],
+                      problem,
+                      name: Optional[str] = None):
+    """Save a QMKProblem as a JSON file
+
+    Save a QMKProblem instance using the JavaScript Object Notation (JSON)
+    format. This only saves the :attr:`problem.profits`,
+    :attr:`problem.weights` and :attr:`problem.capacities` arrays, and the
+    :attr:`problem.name` attribute if it is set.
+
+
+    See Also
+    --------
+    :meth:`.load_problem_json()`
+        For loading a saved model.
+
+
+    Parameters
+    ----------
+    fname : str or PathLike
+        Filepath of the model to be saved at
+
+    problem : qmkpy.QMKProblem
+        Problem instance to be saved
+
+    name : str ,optional
+        Optional name of the problem that is used as the first line of the
+        output file. If it is ``None``, it will first be checked whether the
+        attribute :attr:`problem.name` is set. If this is also ``None``, the
+        name defaults to
+        ``qmkp_{num_items:d}_{num_ks:d}_{np.random.randint(0, 1000):03d}``.
+
+
+    Returns
+    -------
+    None
+    """
+
+    num_items = len(problem.weights)
+    num_ks = len(problem.capacities)
+
+    if name is None:
+        if problem.name is not None:
+            name = problem.name
+        else:
+            name = f"qmkp_{num_items:d}_{num_ks:d}_{np.random.randint(0, 1000):03d}"
+    _problem = {
+                "name": name,
+                "profits": problem.profits.tolist(),
+                "weights": problem.weights.tolist(),
+                "capacities": problem.capacities.tolist(),
+               }
+
+    with open(fname, "w") as out_file:
+        json.dump(_problem, out_file, indent=2)
+
+
+def load_problem_json(fname: str):
+    """Load a previously stored QMKProblem instance from the JSON format
+
+    This function allows loading a QMKProblem from a ``.json`` file, which was
+    created by the :meth:`qmkpy.io.save_problem_json()` method.
+
+    See Also
+    --------
+    :meth:`qmkpy.io.save_problem_json()`
+        For saving a model in the JSON format.
+
+
+    Parameters
+    ----------
+    fname : str or PathLike
+        Filepath of the saved model
+
+
+    Returns
+    -------
+    problem : qmkpy.QMKProblem
+        Loaded problem instance
+    """
+
+    with open(fname, "r") as json_file:
+        _problem = json.load(json_file)
+    problem = qmkp.QMKProblem(**_problem)
     return problem

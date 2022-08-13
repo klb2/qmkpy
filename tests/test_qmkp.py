@@ -10,7 +10,7 @@ from qmkpy.algorithms import constructive_procedure, fcs_procedure
 from qmkpy import checks
 
 
-SAVE_LOAD_STRATEGIES = ("numpy", "pickle", "txt")
+SAVE_LOAD_STRATEGIES = ("numpy", "pickle", "txt", "json")
 
 def test_solver_consistency():
     profits = np.array([[1, 1, 2, 3],
@@ -163,3 +163,48 @@ def test_qmkp_load_fail(tmp_path,strategy):
 
     with pytest.raises(NotImplementedError):
         loaded_problem = QMKProblem.load(outfile, strategy=strategy)
+
+
+@pytest.mark.parametrize("profits,weights,capacities,expected",
+                         (
+                          ([[1, 1, 2, 3], [1, 1, 4, 5], [2, 4, 2, 6], [3, 5, 6, 3]],
+                           [1, 2, 3, 3], [5, 5, 3], True),
+                          ([[1, 0, 2, 3], [1, 1, 4, 5], [2, 4, 2, 6], [3, 5, 6, 3]],
+                           [1, 2, 3, 3], [5, 5, 3], False),
+                          ([[1, 1, 2, 3], [1, 1, 4, 5], [2, 4, 2, 6], [3, 5, 6, 3]],
+                           [1, 2, 5, 3], [5, 5, 3], False),
+                          ([[1, 1, 2, 3], [1, 1, 4, 5], [2, 4, 2, 6], [3, 5, 6, 3]],
+                           [1, 2, 3, 3], [6, 5, 3], False),
+                          ([[1, 1, 3], [1, 4, 5], [4, 2, 6]],
+                           [1, 2, 3], [6, 5, 3], False),
+                         ))
+def test_qmkp_comparison(profits, weights, capacities, expected):
+    _profits = np.array([[1, 1, 2, 3],
+                         [1, 1, 4, 5],
+                         [2, 4, 2, 6],
+                         [3, 5, 6, 3]])
+    _weights = [1, 2, 3, 3]
+    _capacities = [5, 5, 3]
+    p1 = QMKProblem(profits, weights, capacities)
+    p2 = QMKProblem(_profits, _weights, _capacities)
+    are_equal = (p1 == p2)
+    assert are_equal == expected
+
+@pytest.mark.parametrize("other",
+                         (
+                          ([[1, 1, 2, 3], [1, 1, 4, 5], [2, 4, 2, 6], [3, 5, 6, 3]],
+                           [1, 2, 3, 3], [5, 5, 3]),
+                          (1, 2, 3),
+                          "ok",
+                         )
+                        )
+def test_qmkp_comparison_not_implemented(other):
+    profits = np.array([[1, 1, 2, 3],
+                        [1, 1, 4, 5],
+                        [2, 4, 2, 6],
+                        [3, 5, 6, 3]])
+    weights = [1, 2, 3, 3]
+    capacities = [5, 5, 3]
+    qmkp = QMKProblem(profits, weights, capacities)
+    are_equal = (qmkp == other)
+    assert are_equal == False
