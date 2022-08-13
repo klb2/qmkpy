@@ -43,6 +43,9 @@ class QMKProblem:
         assignments of items to knapsacks. If :math:`a_{ij}=1`, element
         :math:`i` is assigned to knapsack :math:`j`.
         This attribute is overwritten when calling :meth:`.solve()`.
+
+    name : str, optional
+        Optional name of the problem instance
     """
 
     def __init__(self,
@@ -51,7 +54,8 @@ class QMKProblem:
                  capacities: Iterable[float], 
                  algorithm: Optional[Callable] = None,
                  args: Optional[tuple] = None,
-                 assignments: Optional[np.array] = None):
+                 assignments: Optional[np.array] = None,
+                 name : Optional[str] = None):
         profits = np.array(profits)
         checks.check_dimensions(profits, weights)
         self.profits = profits
@@ -67,6 +71,18 @@ class QMKProblem:
 
         if assignments is None:
             self.assignments = np.zeros((len(self.weights), len(self.capacities)))
+
+        self.name = name
+
+
+    def __eq__(self, other):
+        if not isinstance(other, QMKProblem):
+            return NotImplemented
+        _eq_profits = np.array_equal(self.profits, other.profits)
+        _eq_weights = np.array_equal(self.weights, other.weights)
+        _eq_capacities = np.array_equal(self.capacities, other.capacities)
+        return _eq_profits and _eq_weights and _eq_capacities
+
     
     def solve(self, algorithm: Optional[Callable] = None,
               args: Optional[tuple] = None) -> Tuple[np.array, float]:
