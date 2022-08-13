@@ -12,23 +12,23 @@ by the implemented constructive procedure.
    :caption: Defining and Solving a QMKP
    :linenos:
 
-    import numpy as np
-    from qmkpy import total_profit_qmkp, QMKProblem
-    from qmkpy import algorithms
+   import numpy as np
+   from qmkpy import total_profit_qmkp, QMKProblem
+   from qmkpy import algorithms
 
-    weights = [5, 2, 3, 4]  # four items
-    capacities = [10, 5, 12, 4, 2]  # five knapsacks
-    profits = np.array([[3, 1, 0, 2],
-                        [1, 1, 1, 4],
-                        [0, 1, 2, 2],
-                        [2, 4, 2, 3]])  # symmetric profit matrix
+   weights = [5, 2, 3, 4]  # four items
+   capacities = [10, 5, 12, 4, 2]  # five knapsacks
+   profits = np.array([[3, 1, 0, 2],
+                       [1, 1, 1, 4],
+                       [0, 1, 2, 2],
+                       [2, 4, 2, 3]])  # symmetric profit matrix
 
-    qmkp = QMKProblem(profits, weights, capacities)
-    qmkp.algorithm = algorithms.constructive_procedure
-    assignments, total_profit = qmkp.solve()
+   qmkp = QMKProblem(profits, weights, capacities)
+   qmkp.algorithm = algorithms.constructive_procedure
+   assignments, total_profit = qmkp.solve()
 
-    print(assignments)
-    print(total_profit)
+   print(assignments)
+   print(total_profit)
 
 
 Saving a Problem Instance
@@ -40,20 +40,20 @@ share examples as a benchmark dataset to compare different algorithms.
    :caption: Saving a QMKProblem Instance
    :linenos:
 
-    import numpy as np
-    from qmkpy import QMKProblem
+   import numpy as np
+   from qmkpy import QMKProblem
 
-    weights = [5, 2, 3, 4]  # four items
-    capacities = [10, 5, 12, 4, 2]  # five knapsacks
-    profits = np.array([[3, 1, 0, 2],
-                        [1, 1, 1, 4],
-                        [0, 1, 2, 2],
-                        [2, 4, 2, 3]])  # symmetric profit matrix
+   weights = [5, 2, 3, 4]  # four items
+   capacities = [10, 5, 12, 4, 2]  # five knapsacks
+   profits = np.array([[3, 1, 0, 2],
+                       [1, 1, 1, 4],
+                       [0, 1, 2, 2],
+                       [2, 4, 2, 3]])  # symmetric profit matrix
 
-    qmkp = QMKProblem(profits, weights, capacities)
+   qmkp = QMKProblem(profits, weights, capacities)
 
-    # Save the problem instance using the Numpy npz format
-    qmkp.save("my_problem.npz", strategy="numpy") 
+   # Save the problem instance using the Numpy npz format
+   qmkp.save("my_problem.npz", strategy="numpy") 
 
 
 Loading a Saved QMKProblem Instance
@@ -66,7 +66,7 @@ capacities.
    :caption: Loading a Saved QMKProblem
    :linenos:
 
-    from qmkpy import QMKProblem
+   from qmkpy import QMKProblem
 
-    saved_problem = "my_problem.npz"  # saved model file
-    qmkp = QMKProblem.load(saved_problem, strategy="numpy")
+   saved_problem = "my_problem.npz"  # saved model file
+   qmkp = QMKProblem.load(saved_problem, strategy="numpy")
