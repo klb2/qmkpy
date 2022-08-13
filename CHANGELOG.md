@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 
 ## [Unreleased]
+### Added
+- Add new `json` strategy to save and load problem instances
 
 
 ## [1.1.0] - 2022-08-08

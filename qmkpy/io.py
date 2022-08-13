@@ -1,6 +1,7 @@
 import os
 from typing import Iterable, Any, Union, Callable, Optional, Tuple, NoReturn
 import pickle
+import json
 
 import numpy as np
 
@@ -332,4 +333,72 @@ def load_problem_txt(fname: Union[str, bytes, os.PathLike], sep:str = "\t"):
     assert len(capacities) == num_ks
 
     problem = qmkp.QMKProblem(profits, weights, capacities)
+    return problem
+
+
+def save_problem_json(fname: Union[str, bytes, os.PathLike],
+                      problem):
+    """Save a QMKProblem as a JSON file
+
+    Save a QMKProblem instance using the JavaScript Object Notation (JSON)
+    format. This only saves the :attr:`problem.profits`,
+    :attr:`problem.weights`, and :attr:`problem.capacities` arrays.
+
+
+    See Also
+    --------
+    :meth:`.load_problem_json()`
+        For loading a saved model.
+
+
+    Parameters
+    ----------
+    fname : str or PathLike
+        Filepath of the model to be saved at
+
+    problem : qmkpy.QMKProblem
+        Problem instance to be saved
+
+
+    Returns
+    -------
+    None
+    """
+
+    _problem = {
+                "profits": problem.profits.tolist(),
+                "weights": problem.weights.tolist(),
+                "capacities": problem.capacities.tolist(),
+               }
+    with open(fname, "w") as out_file:
+        json.dump(_problem, out_file, indent=2)
+
+
+def load_problem_json(fname: str):
+    """Load a previously stored QMKProblem instance from the JSON format
+
+    This function allows loading a QMKProblem from a ``.json`` file, which was
+    created by the :meth:`qmkpy.io.save_problem_json()` method.
+
+    See Also
+    --------
+    :meth:`qmkpy.io.save_problem_json()`
+        For saving a model in the JSON format.
+
+
+    Parameters
+    ----------
+    fname : str or PathLike
+        Filepath of the saved model
+
+
+    Returns
+    -------
+    problem : qmkpy.QMKProblem
+        Loaded problem instance
+    """
+
+    with open(fname, "r") as json_file:
+        _problem = json.load(json_file)
+    problem = qmkp.QMKProblem(**_problem)
     return problem

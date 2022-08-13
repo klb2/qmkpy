@@ -10,7 +10,7 @@ from qmkpy.algorithms import constructive_procedure, fcs_procedure
 from qmkpy import checks
 
 
-SAVE_LOAD_STRATEGIES = ("numpy", "pickle", "txt")
+SAVE_LOAD_STRATEGIES = ("numpy", "pickle", "txt", "json")
 
 def test_solver_consistency():
     profits = np.array([[1, 1, 2, 3],
