@@ -83,6 +83,16 @@ class QMKProblem:
         _eq_capacities = np.array_equal(self.capacities, other.capacities)
         return _eq_profits and _eq_weights and _eq_capacities
 
+
+    def __str__(self):
+        if self.name is not None:
+            _print = str(self.name)
+        else:
+            num_ks = len(self.capacities)
+            num_items = len(self.weights)
+            _print = f"QMKProblem({num_items:d}, {num_ks:d})"
+        return _print
+
     
     def solve(self, algorithm: Optional[Callable] = None,
               args: Optional[tuple] = None) -> Tuple[np.array, float]:

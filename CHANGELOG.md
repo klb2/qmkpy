@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 - Add new `json` strategy to save and load problem instances
 - Add new (optional) `name` attribute to the `QMKProblem` class
+- Add custom `__str__` method to the `QMKProblem` class which prints the name
+  attribute, if it exists, or a string with the number of items and knapsacks
+  otherwise.
 
 ### Updated
 - The `io.save_problem_txt` will now first try to use the `problem.name`
