@@ -208,3 +208,28 @@ def test_qmkp_comparison_not_implemented(other):
     qmkp = QMKProblem(profits, weights, capacities)
     are_equal = (qmkp == other)
     assert are_equal == False
+
+@pytest.mark.parametrize("name",
+                         ("test", "QMKP_5_12_d", "Name of the Problem"))
+def test_qmkp_str_conversion_with_name(name):
+    profits = np.array([[1, 1, 2, 3],
+                        [1, 1, 4, 5],
+                        [2, 4, 2, 6],
+                        [3, 5, 6, 3]])
+    weights = [1, 2, 3, 3]
+    capacities = [5, 5, 3]
+    qmkp = QMKProblem(profits, weights, capacities, name=name)
+    _str = str(qmkp)
+    assert _str == name
+
+def test_qmkp_str_conversion_without_name():
+    num_items = 5
+    num_ks = 10
+    weights = np.random.rand(num_items)
+    capacities = np.random.rand(num_ks)
+    profits = np.random.rand(num_items, num_items)
+    profits = profits.T @ profits
+    qmkp = QMKProblem(profits, weights, capacities)
+    _str = str(qmkp)
+    expected = "QMKProblem(5, 10)"
+    assert _str == expected
