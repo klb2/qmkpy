@@ -39,6 +39,13 @@ additional joint profit $p_{ij}$.
 - High reproducibility and direct comparison between different algorithms
 
 
+The benefit of enabling a simple and direct way of implementing novel
+algorithms is highlighted by an example in the provided Jupyter notebook in
+[examples/Custom
+Algorithm.ipynb](https://github.com/klb2/qmkpy/blob/master/examples/Custom%20Algorithm.ipynb).  
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/klb2/qmkpy/HEAD?labpath=examples%2FCustom%20Algorithm.ipynb)
+
+
 ## Installation
 The package can easily be installed via pip.
 Either from the PyPI
