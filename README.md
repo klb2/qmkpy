@@ -50,7 +50,9 @@ or from the GitHub repository
 git clone https://github.com/klb2/qmkpy.git
 cd qmkpy
 git checkout dev  # optional for the latest development version
+pip3 install -r requirements.txt
 pip3 install .
+pip3 install pytest  # optional if you want to run the unit tests
 ```
 
 ## Usage
