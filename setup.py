@@ -32,4 +32,5 @@ setup(
     packages=find_packages(),
     tests_require=['pytest', 'pytest-cov'],
     install_requires=['numpy'],
+    zip_safe=True,
 )
