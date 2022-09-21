@@ -1,6 +1,16 @@
+"""
+Various checks/verification functions.
+
+This module contains various functions to perform check/verify provided
+parameters in the context of the QMKP.
+For example, this includes a check whether a provided assignment complies with
+the weight/capacity constraints.
+"""
+
 from typing import Iterable, Any, Union, NoReturn, Optional
 
 import numpy as np
+
 
 def check_dimensions(profits: np.array,
                      weights: Optional[Iterable[float]] = None) -> NoReturn:
@@ -35,6 +45,7 @@ def check_dimensions(profits: np.array,
         if not num_items == _row_p:
             raise ValueError("The number of items does not match the number of profits.")
 
+
 def is_binary(x: Iterable[float]) -> bool:
     """Check whether a provided array is binary
 
@@ -54,6 +65,7 @@ def is_binary(x: Iterable[float]) -> bool:
 
     x = np.array(x)
     return ((x == 0) | (x == 1)).all()
+
 
 def is_feasible_solution(assignments: np.array,
                          profits: np.array,

@@ -1,6 +1,14 @@
-from typing import Iterable, Any, Union, Callable, Optional, Tuple
+"""
+Utility functions.
+
+This module contains various utility functions, e.g., the conversion from the
+binary assignment matrix to the chromosome form.
+"""
+
+from typing import Iterable, Union, Optional
 
 import numpy as np
+
 
 def value_density(profits: np.array,
                   weights: Iterable[float],
@@ -11,7 +19,12 @@ def value_density(profits: np.array,
     This function calculates the value density of item :math:`i` for knapsack
     :math:`k` and given assignments :math:`\\mathcal{A}_k` according to
 
-    .. math:: \\mathrm{vd}_i(\\mathcal{A}_k) = \\frac{1}{w_i} \\left(p_i + \\sum_{\\substack{j\\in\\mathcal{A}_k\\\\j\\neq i}} p_{ij}\\right)
+    .. math::
+
+        \\mathrm{vd}_i(\\mathcal{A}_k) =
+            \\frac{1}{w_i} \\left(p_i +
+                \\sum_{\\substack{j\\in\\mathcal{A}_k\\\\j\\neq i}} p_{ij}
+            \\right)
 
     This value indicates the profit (per item weight) that is gained by adding
     the item :math:`i` to knapsack :math:`k` when the items
@@ -94,6 +107,7 @@ def value_density(profits: np.array,
         densities = densities[unassigned_items], unassigned_items
     return densities
 
+
 def chromosome_from_assignment(assignments: np.array) -> Iterable[int]:
     """Return the chromosome from an assignment matrix
 
@@ -110,7 +124,7 @@ def chromosome_from_assignment(assignments: np.array) -> Iterable[int]:
         
     .. math::
         
-        A = 
+        A =
         \\begin{pmatrix} 1 & 0 & 0\\\\
                          0 & 0 & 1\\\\
                          0 & 0 & 0\\\\
@@ -124,7 +138,7 @@ def chromosome_from_assignment(assignments: np.array) -> Iterable[int]:
         C(A) = \\begin{pmatrix}1 & 3 & 0 & 1\\end{pmatrix}
 
     However, in the 0-index based representation in Python, this function will
-    return 
+    return
 
     .. code-block:: python
 
@@ -195,6 +209,7 @@ def assignment_from_chromosome(chromosome: Iterable[int], num_ks: int) -> np.arr
     assignments[_assigned_items, chromosome[_assigned_items]] = 1
     return assignments
 
+
 def get_unassigned_items(assignments: Union[np.array, Iterable[int]]) -> Iterable[int]:
     """Return the list of unassigned items
 
@@ -228,6 +243,7 @@ def get_unassigned_items(assignments: Union[np.array, Iterable[int]]) -> Iterabl
     else:
         raise NotImplementedError("Only the binary and chromosome form are accepted.")
     return unassigned_items
+
 
 def get_empty_knapsacks(assignments: Union[np.array, Iterable[int]],
                         num_ks: Optional[int] = None) -> Iterable[int]:

@@ -1,3 +1,11 @@
+"""
+General definitions of the quadratic multiple knapsack problem.
+
+This module contains the basic implementation of the quadratic multiple
+knapsack problem (QMKP).
+In particular, this includes the base class :class:`QMKProblem`.
+"""
+
 import os
 from typing import Iterable, Any, Union, Callable, Optional, Tuple, NoReturn
 import pickle
