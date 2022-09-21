@@ -35,6 +35,10 @@ When assigning item :math:`i` to a knapsack, it yields the profit :math:`p_i`.
 When assigning item :math:`j` (with :math:`j\neq i`) to the same knapsack, the
 additional (joint) profit :math:`p_{ij}` is obtained.
 
+A detailed description of the way how the mathematical components of the QMKP
+are implemented in the ``qmkpy`` framework can be found in the `code
+conventions page <conventions.html#basic-arrays>`_.
+
 For a basic overview on knapsack problems, see [KPP04]_.
 
 .. toctree::

@@ -3,7 +3,8 @@ Implementing a Novel Algorithm
 
 .. note::
     **TL;DR:**  
-    Your function needs to be callable as: ``func(profits, weights, capacities, *args)``
+    Your function needs to be callable as: ``func(profits, weights, capacities,
+    *args)`` and needs to return ``assignments`` in the binary form.
 
 
 If you want to implement and test a novel solution algorithm for the QMKP, you
