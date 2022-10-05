@@ -1,3 +1,10 @@
+"""
+Solution algorithms for the QMKP.
+
+This module contains all the algorithms that can be used to solve the quadratic
+multiple knapsack problem (QMKP).
+"""
+
 from typing import Iterable, Any, Optional
 
 import numpy as np

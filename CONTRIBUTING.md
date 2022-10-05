@@ -20,8 +20,9 @@ Any open issue that is tagged with "bug" is open to whoever wants to fix it.
 
 ## Implementing New Algorithms
 You can always implement new algorithms to solve the QMKP. If you want to do
-this, please check the documentation on style guidelines like the order of
-arguments.
+this, please check the
+[documentation](https://qmkpy.readthedocs.io/en/latest/developing.html#contributing-a-new-algorithm-to-the-package)
+on style guidelines like the order of arguments.
 
 Please also make sure that:
 

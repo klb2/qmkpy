@@ -1,5 +1,11 @@
+"""
+Input/Output functions.
+
+This module contains functions to save and load QMKP instances.
+"""
+
 import os
-from typing import Iterable, Any, Union, Callable, Optional, Tuple, NoReturn
+from typing import Union, Optional
 import pickle
 import json
 
@@ -44,6 +50,7 @@ def save_problem_numpy(fname: Union[str, bytes, os.PathLike],
                         profits=problem.profits,
                         weights=problem.weights,
                         capacities=problem.capacities)
+
 
 def load_problem_numpy(fname: str):
     """Load a previously stored QMKProblem instance from the Numpy format
@@ -113,6 +120,7 @@ def save_problem_pickle(fname: Union[str, bytes, os.PathLike],
     with open(fname, 'wb') as out_file:
         pickle.dump(problem, out_file)
 
+
 def load_problem_pickle(fname: Union[str, bytes, os.PathLike]):
     """Load a previously stored QMKProblem instance from the Pickle format
 
@@ -157,7 +165,7 @@ def save_problem_txt(fname: Union[str, bytes, os.PathLike],
     https://cedric.cnam.fr/~soutif/QKP/format.html.
 
     The file format is as follows:
-      
+ 
       1. The first line provides a name/reference of the problem
       2. The second line specifies the number of items
       3. The third line specifies the number of knapsacks
@@ -265,7 +273,7 @@ def save_problem_txt(fname: Union[str, bytes, os.PathLike],
         out_file.writelines(content)
     
 
-def load_problem_txt(fname: Union[str, bytes, os.PathLike], sep:str = "\t"):
+def load_problem_txt(fname: Union[str, bytes, os.PathLike], sep: str = "\t"):
     """Load a previously stored QMKProblem instance from the text format
 
     This function loads a QMKProblem instance from a text file according to the

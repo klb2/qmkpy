@@ -30,6 +30,8 @@ setup(
         "Topic :: Scientific/Engineering",
         ],
     packages=find_packages(),
+    python_requires=">=3.7",
     tests_require=['pytest', 'pytest-cov'],
     install_requires=['numpy'],
+    zip_safe=True,
 )
