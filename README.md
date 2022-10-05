@@ -73,3 +73,13 @@ the API can be found in the [documentation](https://qmkpy.readthedocs.io).
 
 A collection of reference datasets can be found at
 [https://github.com/klb2/qmkpy-datasets](https://github.com/klb2/qmkpy-datasets).
+
+
+## Contributing
+Please see
+[CONTRIBUTING.md](https://github.com/klb2/qmkpy/blob/master/CONTRIBUTING.md)
+for guidelines on how to contribute to this project.
+In particular, novel algorithms are always welcome. Please check out the
+[documentation](https://qmkpy.readthedocs.io/en/latest/developing.html#contributing-a-new-algorithm-to-the-package)
+for a brief overview on how to implement new algorithms for the QMKPy
+framework.
