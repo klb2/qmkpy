@@ -21,14 +21,30 @@ $$
 \begin{alignat}{3}
 	\max\quad & \sum_{u\in\mathcal{K}}\Bigg(\sum_{i\in\mathcal{A}(u)} p_{i} &+&\sum_{\substack{j\in\mathcal{A}(u), \\ j\neq i}} p_{ij}\Bigg)\\
 	\mathrm{s.t.}\quad & \sum_{i\in\mathcal{A}(u)} w_{i} \leq c_u & \quad & \forall u\in\mathcal{K} \\
-	& \sum_{u=1}^{K} a_{iu} \leq 1  & & \forall 1\leq i \leq N
+	& \sum_{u=1}^{K} a_{iu} \leq 1  & & \forall i \in \{1, 2, \dots, N\}
 \end{alignat}
 $$
 
-This describes an assignment problem where one wants to assign $N$ items to $K$
-knapsacks. If item $i$ is assigned to a knapsack, it yields the profit $p_i$.
+This describes an assignment problem where one wants to assign $N\in\mathbb{N}$
+items to $K\in\mathbb{N}$ knapsacks, which are described by the index set
+$\mathcal{K}=\{1, 2, \dots, K\}$.
+Item $i$ has the weight $w_i\in\mathbb{R}_{+}$ and knapsack $u$ has the weight
+capacity $c_u\mathbb{R}_{+}$.
+If item $i$ is assigned to a knapsack, it yields the (non-negative) profit
+$p_i\in\mathbb{R}_{+}$.
 If item $j$ (with $j\neq i$ ) is assigned _to the same_ knapsack, we get the
-additional joint profit $p_{ij}$.
+additional joint profit $p_{ij}\in\mathbb{R}_{+}$.
+
+The set of items which are assigned to knapsack $u$ is denoted by
+$\mathcal{A}(u)$ and $a_{iu}\in\{0, 1\}$ is an indicator whether item $i$ is
+assigned to knapsack $u$.
+
+The objective of the above problem is to maximize the total profit such that
+each item is assigned to at most one knapsack and such that the weight capacity
+constraints of the knapsacks are not violated.
+
+_Remark:_ The profits $p$ are also referred to as "values" in the literature.
+
 
 ## Features
 
