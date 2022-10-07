@@ -10,9 +10,12 @@
 
 This software package primarily aims at research in the areas of operations
 research and optimization.
-It provides a way of quickly implementing and testing new algorithms to solve
-the quadratic multiple knapsack problem (QMKP) and compare it with existing
-solutions.
+It serves as a testbed that provides a way of quickly implementing and testing
+new algorithms to solve the quadratic multiple knapsack problem (QMKP) and
+compare it with existing solutions.
+
+The goal is to encourage researchers and developers to share their algorithms
+and make them publicly available.
 
 
 ## Problem Description
