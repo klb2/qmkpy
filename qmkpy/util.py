@@ -10,10 +10,12 @@ from typing import Iterable, Union, Optional
 import numpy as np
 
 
-def value_density(profits: np.array,
-                  weights: Iterable[float],
-                  assignments: Union[np.array, Iterable[int]],
-                  reduced_output: bool = False) -> Iterable[float]:
+def value_density(
+    profits: np.array,
+    weights: Iterable[float],
+    assignments: Union[np.array, Iterable[int]],
+    reduced_output: bool = False,
+) -> Iterable[float]:
     """Calculate the value density given a set of selected objects.
 
     This function calculates the value density of item :math:`i` for knapsack
@@ -98,9 +100,9 @@ def value_density(profits: np.array,
     unassigned_items = np.where(unassigned_items)[0]
     contributions = profits @ assignments
     _main_diag = np.diag(profits)
-    _main_diag_contrib = np.diag(_main_diag) @ (np.ones_like(assignments)-assignments)
+    _main_diag_contrib = np.diag(_main_diag) @ (np.ones_like(assignments) - assignments)
     contributions = contributions + _main_diag_contrib
-    densities = contributions/np.reshape(weights, (-1, 1))
+    densities = contributions / np.reshape(weights, (-1, 1))
     if _flat:
         densities = np.ravel(densities)
     if reduced_output:
@@ -121,9 +123,9 @@ def chromosome_from_assignment(assignments: np.array) -> Iterable[int]:
     Assume that we have 4 items and 3 knapsacks. Let Items 1 and 4 be assigned
     to Knapsack 1, Item 2 is assigned to Knapsack 3 and Item 3 is not assigned.
     In the binary representation, this is
-        
+
     .. math::
-        
+
         A =
         \\begin{pmatrix} 1 & 0 & 0\\\\
                          0 & 0 & 1\\\\
@@ -143,7 +145,7 @@ def chromosome_from_assignment(assignments: np.array) -> Iterable[int]:
     .. code-block:: python
 
         chromosome_from_assignment(A) = [0, 2, -1, 0]
-    
+
     as the chromosome.
 
 
@@ -153,7 +155,7 @@ def chromosome_from_assignment(assignments: np.array) -> Iterable[int]:
         Binary matrix of size :math:`N\\times K` which represents the final
         assignments of items to knapsacks. If :math:`a_{ij}=1`, element
         :math:`i` is assigned to knapsack :math:`j`.
-    
+
     Returns
     -------
     chromosome : np.array
@@ -193,7 +195,7 @@ def assignment_from_chromosome(chromosome: Iterable[int], num_ks: int) -> np.arr
     num_ks : int
         Number of knapsacks :math:`K`.
 
-    
+
     Returns
     -------
     assignments : np.array
@@ -245,8 +247,9 @@ def get_unassigned_items(assignments: Union[np.array, Iterable[int]]) -> Iterabl
     return unassigned_items
 
 
-def get_empty_knapsacks(assignments: Union[np.array, Iterable[int]],
-                        num_ks: Optional[int] = None) -> Iterable[int]:
+def get_empty_knapsacks(
+    assignments: Union[np.array, Iterable[int]], num_ks: Optional[int] = None
+) -> Iterable[int]:
     """Return the list of empty knapsacks
 
     Return the list of empty knapsacks (as their indices) from a given
@@ -279,9 +282,13 @@ def get_empty_knapsacks(assignments: Union[np.array, Iterable[int]],
     assignments = np.array(assignments)
     if np.ndim(assignments) == 1:
         if not isinstance(num_ks, int):
-            raise TypeError("If the assignments are given in the chromosome form, the total number of knapsacks is required.")
+            raise TypeError(
+                "If the assignments are given in the chromosome form, the total number of knapsacks is required."
+            )
         if np.max(assignments) >= num_ks:
-            raise ValueError("The number of total knapsacks is too small for the given assignment chromosome.")
+            raise ValueError(
+                "The number of total knapsacks is too small for the given assignment chromosome."
+            )
         _all_ks = set(range(num_ks))
         empty_ks = _all_ks.difference(assignments)
         empty_ks = list(empty_ks)
@@ -293,9 +300,11 @@ def get_empty_knapsacks(assignments: Union[np.array, Iterable[int]],
     return empty_ks
 
 
-def get_remaining_capacities(weights: Iterable[float],
-                             capacities: Iterable[float],
-                             assignments: Union[np.array, Iterable[int]]):
+def get_remaining_capacities(
+    weights: Iterable[float],
+    capacities: Iterable[float],
+    assignments: Union[np.array, Iterable[int]],
+):
     """Return the remaining weight capacities of the knapsacks
 
     Returns the remaining weight capacities of the knapsacks for given

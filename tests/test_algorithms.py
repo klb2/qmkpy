@@ -2,19 +2,21 @@ import numpy as np
 import pytest
 
 from qmkpy import total_profit_qmkp
-from qmkpy.algorithms import (constructive_procedure, fcs_procedure,
-                              random_assignment, round_robin)
+from qmkpy.algorithms import (
+    constructive_procedure,
+    fcs_procedure,
+    random_assignment,
+    round_robin,
+)
 from qmkpy import checks
 
 
 SOLVERS = (constructive_procedure, fcs_procedure, random_assignment, round_robin)
 
+
 @pytest.mark.parametrize("solver", SOLVERS)
 def test_solver_feasibility(solver):
-    profits = np.array([[1, 1, 2, 3],
-                        [1, 1, 4, 5],
-                        [2, 4, 2, 6],
-                        [3, 5, 6, 3]])
+    profits = np.array([[1, 1, 2, 3], [1, 1, 4, 5], [2, 4, 2, 6], [3, 5, 6, 3]])
     weights = [1, 2, 3, 3]
     capacities = [5, 5, 3]
     solution = solver(profits, weights, capacities)
@@ -24,10 +26,7 @@ def test_solver_feasibility(solver):
 
 @pytest.mark.parametrize("solver", SOLVERS)
 def test_solver(solver):
-    profits = np.array([[1, 1, 2, 3],
-                        [1, 1, 4, 5],
-                        [2, 4, 2, 6],
-                        [3, 5, 6, 3]])
+    profits = np.array([[1, 1, 2, 3], [1, 1, 4, 5], [2, 4, 2, 6], [3, 5, 6, 3]])
     weights = [1, 2, 3, 3]
     capacities = [5, 5, 3]
     solution = solver(profits, weights, capacities)
@@ -35,6 +34,7 @@ def test_solver(solver):
     total_profit = total_profit_qmkp(profits, solution)
     print(total_profit)
     assert total_profit >= 0
+
 
 @pytest.mark.parametrize("solver", SOLVERS)
 def test_solver_large(solver):
@@ -50,12 +50,12 @@ def test_solver_large(solver):
     print(total_profit)
     assert total_profit >= 0
 
+
 @pytest.mark.parametrize("solver", SOLVERS)
 def test_solver_no_assignments(solver):
     weights = [10, 5, 14, 52]
     capacities = [1, 4, 2, 1]
     num_elements = len(weights)
-    num_knapsacks = len(capacities)
     profits = np.random.randint(0, 8, size=(num_elements, num_elements))
     profits = profits @ profits.T
     solution = solver(profits, weights, capacities)
