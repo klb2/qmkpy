@@ -56,7 +56,6 @@ def test_solver_no_assignments(solver):
     weights = [10, 5, 14, 52]
     capacities = [1, 4, 2, 1]
     num_elements = len(weights)
-    num_knapsacks = len(capacities)
     profits = np.random.randint(0, 8, size=(num_elements, num_elements))
     profits = profits @ profits.T
     solution = solver(profits, weights, capacities)

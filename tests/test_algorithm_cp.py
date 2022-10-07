@@ -50,6 +50,6 @@ def test_cp_feasibility_starting_assignment(starting_assignment):
     capacities = [5, 5, 3]
     starting_assignment = np.array(starting_assignment)
     with pytest.raises(ValueError):
-        solution = constructive_procedure(
+        constructive_procedure(
             profits, weights, capacities, starting_assignment=starting_assignment
         )

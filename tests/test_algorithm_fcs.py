@@ -46,7 +46,7 @@ def test_fcs_alpha_feasible(alpha):
     weights = np.random.randint(1, 5, size=(num_elements,))
     capacities = np.random.randint(3, 12, size=(num_knapsacks,))
     with pytest.raises(ValueError):
-        solution = fcs_procedure(profits, weights, capacities, alpha=alpha)
+        fcs_procedure(profits, weights, capacities, alpha=alpha)
 
 
 @pytest.mark.parametrize("len_history", (0, 0.1, -20))
@@ -58,7 +58,7 @@ def test_fcs_history_feasible(len_history):
     weights = np.random.randint(1, 5, size=(num_elements,))
     capacities = np.random.randint(3, 12, size=(num_knapsacks,))
     with pytest.raises(ValueError):
-        solution = fcs_procedure(profits, weights, capacities, len_history=len_history)
+        fcs_procedure(profits, weights, capacities, len_history=len_history)
 
 
 @pytest.mark.parametrize("alpha", (None, 0.5, 0.1, 0.999, 0.2))

@@ -2,7 +2,6 @@ import os.path
 import filecmp
 
 import numpy as np
-import pytest
 
 from qmkpy import io
 from qmkpy import qmkp
@@ -35,7 +34,7 @@ def test_save_txt(tmp_path):
     capacities = [5, 8, 1, 9, 2]
 
     problem = qmkp.QMKProblem(profits, weights, capacities)
-    outfile = os.path.join(tmp_path, f"save.txt")
+    outfile = os.path.join(tmp_path, "save.txt")
     io.save_problem_txt(outfile, problem, name="Reference Problem")
     assert filecmp.cmp(outfile, EX_TXT, shallow=False)
 
@@ -63,6 +62,6 @@ def test_save_json(tmp_path):
     name = "qmkp_10_3_679"
 
     problem = qmkp.QMKProblem(profits, weights, capacities, name=name)
-    outfile = os.path.join(tmp_path, f"save.json")
+    outfile = os.path.join(tmp_path, "save.json")
     io.save_problem_json(outfile, problem)
     assert filecmp.cmp(outfile, EX_JSON, shallow=False)

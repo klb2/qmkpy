@@ -43,7 +43,7 @@ def test_is_feasible_solution_pass(assignments):
     is_feasible = checks.is_feasible_solution(
         capacities=capacities, weights=weights, profits=profits, assignments=assignments
     )
-    assert is_feasible == True
+    assert is_feasible is True
 
 
 @pytest.mark.parametrize(
@@ -67,7 +67,7 @@ def test_is_feasible_solution_fail(assignments):
     is_feasible = checks.is_feasible_solution(
         capacities=capacities, weights=weights, profits=profits, assignments=assignments
     )
-    assert is_feasible == False
+    assert is_feasible is False
 
 
 @pytest.mark.parametrize(
@@ -88,8 +88,8 @@ def test_is_feasible_solution_raise(assignments):
     profits = np.array([[1, 1, 2, 3], [1, 1, 4, 5], [2, 4, 2, 6], [3, 5, 6, 3]])
     weights = [1, 3, 2, 2]
     capacities = [5, 5, 3]
-    with pytest.raises(ValueError) as e_info:
-        is_feasible = checks.is_feasible_solution(
+    with pytest.raises(ValueError):
+        checks.is_feasible_solution(
             capacities=capacities,
             weights=weights,
             profits=profits,
@@ -124,7 +124,7 @@ def test_dimension_check(profits, weights):
 )
 def test_dimension_check_fail(profits, weights):
     profits = np.array(profits)
-    with pytest.raises(ValueError) as e_info:
+    with pytest.raises(ValueError):
         checks.check_dimensions(profits, weights)
 
 
@@ -171,4 +171,4 @@ def test_symmetric_check_no_raise(profits, expected):
 )
 def test_symmetric_check_raise(profits):
     with pytest.raises(ValueError):
-        symmetric = checks.is_symmetric_profits(profits, raise_error=True)
+        checks.is_symmetric_profits(profits, raise_error=True)

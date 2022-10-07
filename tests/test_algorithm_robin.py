@@ -49,7 +49,7 @@ def test_rr_feasibility_starting_assignment(starting_assignment):
     capacities = [5, 5, 3]
     starting_assignment = np.array(starting_assignment)
     with pytest.raises(ValueError):
-        solution = round_robin(
+        round_robin(
             profits, weights, capacities, starting_assignment=starting_assignment
         )
 
@@ -94,4 +94,4 @@ def test_rr_order_ks_error(order_ks):
     weights = np.random.randint(1, 5, size=(num_elements,))
     capacities = np.random.randint(5, 12, size=(num_knapsacks,))
     with pytest.raises(ValueError):
-        solution = round_robin(profits, weights, capacities, order_ks=order_ks)
+        round_robin(profits, weights, capacities, order_ks=order_ks)

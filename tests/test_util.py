@@ -9,7 +9,6 @@ from qmkpy.util import (
     get_empty_knapsacks,
     get_remaining_capacities,
 )
-from qmkpy import checks
 
 
 @pytest.mark.parametrize(
@@ -122,7 +121,7 @@ def test_profit_fail():
     profits = np.array([[1, 1, 2, 3], [1, 1, 4, 5], [2, 4, 2, 6], [3, 5, 6, 3]])
     assignments = np.array([[0, 0, 1], [2, 0, 0], [-1, 0, 0], [0, 0, 1]])
     with pytest.raises(ValueError):
-        _objective = total_profit_qmkp(profits, assignments)
+        total_profit_qmkp(profits, assignments)
 
 
 @pytest.mark.parametrize(
@@ -192,7 +191,7 @@ def test_get_unassigned_items(assignments, expected):
 )
 def test_get_unassigned_items_not_implemented(assignments):
     with pytest.raises(NotImplementedError):
-        unassigned_items = get_unassigned_items(assignments)
+        get_unassigned_items(assignments)
 
 
 @pytest.mark.parametrize(
@@ -234,7 +233,7 @@ def test_get_empty_knapsacks_chromosome(assignments, num_ks, expected):
 )
 def test_get_empty_knapsacks_chromosome_fail_ks(assignments, expected):
     with pytest.raises(TypeError):
-        empty_ks = get_empty_knapsacks(assignments)
+        get_empty_knapsacks(assignments)
 
 
 @pytest.mark.parametrize(
@@ -248,7 +247,7 @@ def test_get_empty_knapsacks_chromosome_fail_ks(assignments, expected):
 )
 def test_get_empty_knapsacks_chromosome_wrong_num_ks(assignments, num_ks, expected):
     with pytest.raises(ValueError):
-        empty_ks = get_empty_knapsacks(assignments, num_ks)
+        get_empty_knapsacks(assignments, num_ks)
 
 
 @pytest.mark.parametrize(
@@ -260,7 +259,7 @@ def test_get_empty_knapsacks_chromosome_wrong_num_ks(assignments, num_ks, expect
 )
 def test_get_empty_knapsacks_not_implemented(assignments):
     with pytest.raises(NotImplementedError):
-        empty_ks = get_empty_knapsacks(assignments)
+        get_empty_knapsacks(assignments)
 
 
 @pytest.mark.parametrize(

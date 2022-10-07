@@ -28,6 +28,7 @@ def test_parameter_consistency():
     weights = [1, 2, 3, 3]
     capacities = [5, 5, 3]
     cp_solution = constructive_procedure(profits, weights, capacities)
+    print(cp_solution)
     problem = QMKProblem(profits, weights, capacities, algorithm=constructive_procedure)
     pr_solution, profit = problem.solve()
     assert np.all(problem.capacities == [5, 5, 3])
@@ -164,7 +165,7 @@ def test_qmkp_load_fail(tmp_path, strategy):
     problem.save(outfile, strategy="numpy")
 
     with pytest.raises(NotImplementedError):
-        loaded_problem = QMKProblem.load(outfile, strategy=strategy)
+        QMKProblem.load(outfile, strategy=strategy)
 
 
 @pytest.mark.parametrize(
@@ -225,7 +226,7 @@ def test_qmkp_comparison_not_implemented(other):
     capacities = [5, 5, 3]
     qmkp = QMKProblem(profits, weights, capacities)
     are_equal = qmkp == other
-    assert are_equal == False
+    assert are_equal is False
 
 
 @pytest.mark.parametrize("name", ("test", "QMKP_5_12_d", "Name of the Problem"))

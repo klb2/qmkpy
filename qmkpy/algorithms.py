@@ -79,8 +79,6 @@ def constructive_procedure(
 
     start_load = weights @ starting_assignment
     capacities = capacities - start_load
-    idx_c_bar = np.argsort(capacities)[::-1]
-    c_bar = capacities[idx_c_bar]
 
     if np.any(capacities < 0):
         raise ValueError(
@@ -107,6 +105,8 @@ def constructive_procedure(
         dens_v, unassigned = value_density(
             profits, weights, solution, reduced_output=True
         )
+    # idx_c_bar = np.argsort(capacities)[::-1]
+    # c_bar = capacities[idx_c_bar]
     # for _idx_curr_object in idx_sort_objects:
     #    idx_curr_object = j_prime[_idx_curr_object]
     #    _weight_l = weights[idx_curr_object]
@@ -171,8 +171,6 @@ def fcs_procedure(
     capacities = np.array(capacities)
 
     # 1. Initialization
-    num_items = len(weights)
-    num_ks = len(capacities)
     current_solution = constructive_procedure(profits, weights, capacities)
     solution_best = np.copy(current_solution)
     if alpha is None:
