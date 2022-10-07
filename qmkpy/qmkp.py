@@ -7,8 +7,7 @@ In particular, this includes the base class :class:`QMKProblem`.
 """
 
 import os
-from typing import Iterable, Any, Union, Callable, Optional, Tuple, NoReturn
-import pickle
+from typing import Iterable, Union, Callable, Optional, Tuple, NoReturn
 
 import numpy as np
 
@@ -56,14 +55,16 @@ class QMKProblem:
         Optional name of the problem instance
     """
 
-    def __init__(self,
-                 profits: Union[np.array, Iterable[Iterable]],
-                 weights: Iterable[float],
-                 capacities: Iterable[float], 
-                 algorithm: Optional[Callable] = None,
-                 args: Optional[tuple] = None,
-                 assignments: Optional[np.array] = None,
-                 name : Optional[str] = None):
+    def __init__(
+        self,
+        profits: Union[np.array, Iterable[Iterable]],
+        weights: Iterable[float],
+        capacities: Iterable[float],
+        algorithm: Optional[Callable] = None,
+        args: Optional[tuple] = None,
+        assignments: Optional[np.array] = None,
+        name: Optional[str] = None,
+    ):
         profits = np.array(profits)
         checks.check_dimensions(profits, weights)
         self.profits = profits
@@ -82,7 +83,6 @@ class QMKProblem:
 
         self.name = name
 
-
     def __eq__(self, other):
         if not isinstance(other, QMKProblem):
             return NotImplemented
@@ -90,7 +90,6 @@ class QMKProblem:
         _eq_weights = np.array_equal(self.weights, other.weights)
         _eq_capacities = np.array_equal(self.capacities, other.capacities)
         return _eq_profits and _eq_weights and _eq_capacities
-
 
     def __str__(self):
         if self.name is not None:
@@ -101,9 +100,11 @@ class QMKProblem:
             _print = f"QMKProblem({num_items:d}, {num_ks:d})"
         return _print
 
-    
-    def solve(self, algorithm: Optional[Callable] = None,
-              args: Optional[tuple] = None) -> Tuple[np.array, float]:
+    def solve(
+        self,
+        algorithm: Optional[Callable] = None,
+        args: Optional[tuple] = None,
+    ) -> Tuple[np.array, float]:
         """Solve the QMKP
 
         Solve the QMKP using ``algorithm``. This function both returns the
@@ -142,15 +143,15 @@ class QMKProblem:
             args = self.args
         if args is None:
             args = ()
-        assignments = algorithm(self.profits, self.weights, self.capacities,
-                                *args)
+        assignments = algorithm(self.profits, self.weights, self.capacities, *args)
         profit = total_profit_qmkp(self.profits, assignments)
 
         self.assignments = assignments
         return assignments, profit
 
-    def save(self, fname: Union[str, bytes, os.PathLike],
-             strategy: str = "numpy") -> NoReturn:
+    def save(
+        self, fname: Union[str, bytes, os.PathLike], strategy: str = "numpy"
+    ) -> NoReturn:
         """Save the QMKP instance
 
         Save the profits, weights, and capacities of the problem. There exist
@@ -198,8 +199,7 @@ class QMKProblem:
         elif strategy == "json":
             io.save_problem_json(fname, self)
         else:
-            raise NotImplementedError("The strategy '%s' is not implemented.",
-                                      strategy)
+            raise NotImplementedError("The strategy '%s' is not implemented.", strategy)
 
     @classmethod
     def load(cls, fname: str, strategy: str = "numpy"):
@@ -208,7 +208,7 @@ class QMKProblem:
         This functions allows loading a previously saved QMKProblem instance.
         The :meth:`.save()` method provides a way of saving a problem.
 
-        
+
         See Also
         --------
         :meth:`.save()`
@@ -248,8 +248,7 @@ class QMKProblem:
         elif strategy == "json":
             problem = io.load_problem_json(fname)
         else:
-            raise NotImplementedError("The strategy '%s' is not implemented.",
-                                      strategy)
+            raise NotImplementedError("The strategy '%s' is not implemented.", strategy)
         return problem
 
 
@@ -258,7 +257,7 @@ def total_profit_qmkp(profits: np.array, assignments: np.array) -> float:
 
     This function calculates the total profit of a QMKP for a given profit
     matrix :math:`P` and assignments :math:`\\mathcal{A}` as
-    
+
     .. math:: \\sum_{u=1}^{K}\\left(\\sum_{i\\in\\mathcal{A}_u} p_{i} + \\sum_{\\substack{j\\in\\mathcal{A}_u\\\\j\\neq i}} p_{ij}\\right)
 
     where :math:`\\mathcal{A}_{u}` is the set of items that are assigned to
@@ -289,4 +288,4 @@ def total_profit_qmkp(profits: np.array, assignments: np.array) -> float:
     _profit_matrix = assignments.T @ profits @ assignments
     _double_main_diag = assignments.T @ np.diag(profits)
     ks_profits = _double_main_diag + np.diag(_profit_matrix)
-    return np.sum(ks_profits)/2
+    return np.sum(ks_profits) / 2

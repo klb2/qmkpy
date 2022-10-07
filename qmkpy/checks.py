@@ -7,13 +7,14 @@ For example, this includes a check whether a provided assignment complies with
 the weight/capacity constraints.
 """
 
-from typing import Iterable, Any, Union, NoReturn, Optional
+from typing import Iterable, NoReturn, Optional
 
 import numpy as np
 
 
-def check_dimensions(profits: np.array,
-                     weights: Optional[Iterable[float]] = None) -> NoReturn:
+def check_dimensions(
+    profits: np.array, weights: Optional[Iterable[float]] = None
+) -> NoReturn:
     """Simple check whether the dimensions of the parameters match.
 
     This function checks that
@@ -43,7 +44,9 @@ def check_dimensions(profits: np.array,
     if weights is not None:
         num_items = len(weights)
         if not num_items == _row_p:
-            raise ValueError("The number of items does not match the number of profits.")
+            raise ValueError(
+                "The number of items does not match the number of profits."
+            )
 
 
 def is_binary(x: Iterable[float]) -> bool:
@@ -67,11 +70,13 @@ def is_binary(x: Iterable[float]) -> bool:
     return ((x == 0) | (x == 1)).all()
 
 
-def is_feasible_solution(assignments: np.array,
-                         profits: np.array,
-                         weights: Iterable[float], 
-                         capacities: Iterable[float],
-                         raise_error: bool = False) -> bool:
+def is_feasible_solution(
+    assignments: np.array,
+    profits: np.array,
+    weights: Iterable[float],
+    capacities: Iterable[float],
+    raise_error: bool = False,
+) -> bool:
     """Check whether a provided assignment is a feasible solution.
 
     This function performs a formal check whether the provided assignments is a
@@ -79,7 +84,7 @@ def is_feasible_solution(assignments: np.array,
     This means that the shapes of the arrays match and that no weight capacity
     constraint is violated.
 
-    
+
     Parameters
     ----------
     assignments : np.array
@@ -149,8 +154,7 @@ def is_feasible_solution(assignments: np.array,
             return False
 
 
-def is_symmetric_profits(profits: np.array,
-                         raise_error: bool = False) -> bool:
+def is_symmetric_profits(profits: np.array, raise_error: bool = False) -> bool:
     """Check whether the profit matrix is symmetric.
 
     This function performs a check whether the profit matrix :math:`P` is
