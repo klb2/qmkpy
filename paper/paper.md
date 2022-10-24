@@ -1,5 +1,5 @@
 ---
-title: 'QMKPy: A Python Framework for the Quadratic Multiple Knapsack Problem'
+title: 'QMKPy: A Python Testbed for the Quadratic Multiple Knapsack Problem'
 tags:
   - knapsack problems
   - QMKP
@@ -15,7 +15,7 @@ authors:
 affiliations:
  - name: Institute for Communications Technology, Technische Universität Braunschweig, Germany
    index: 1
-date: 07 October 2022
+date: 24 October 2022
 bibliography: paper.bib
 ---
 
