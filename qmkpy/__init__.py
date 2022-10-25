@@ -1,6 +1,6 @@
 __author__ = "Karl Besser"
 __email__ = "k.besser@tu-bs.de"
-__version__ = "1.1.0"
+__version__ = "1.2.0"
 
 
 from . import algorithms

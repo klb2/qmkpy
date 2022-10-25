@@ -58,18 +58,18 @@ whether item $i$ is assigned to knapsack $u$.
 
 # Statement of need
 
-The QMKP is a NP-hard optimization problem and therefore, there exists a
+The QMKP is an NP-hard optimization problem and therefore, there exists a
 variety of (heuristic) algorithms to find good solutions for it.
 While Python frameworks already exist for the standard (multiple)
 knapsack problem and the quadratic knapsack problem, they do not consider the
 _quadratic multiple_ knapsack problem.
 However, this type of problem arises in many areas of research. In addition to
-the typical problems in operations research, it also occurs in distributed
+the typical problems in Operations Research, it also occurs in distributed
 computing [@Rust2020] and in the area of wireless communications
 [@Besser2022wiopt].
 
 For the classic knapsack problem and the quadratic _single_ knapsack problem,
-many well-known optimization frameworks like Gurobi and @ortools provide
+many well-known optimization frameworks like Gurobi [@gurobi] and OR-Tools [@ortools] provide
 solution routines.
 However, they are not directly applicable to the QMKP. Furthermore, it can be
 difficult for researchers to reproduce results that rely on commerical
@@ -102,7 +102,7 @@ following:
 - No additional overhead is required. Only a single function with the novel
   solution algorithm needs to be implemented.
 - Generic unit tests are available to make sure that the novel algorithm
-  fulfills basic criteria.
+  fulfills the set of basic criteria.
 - The ability of loading and saving problem instances allows for quick and
   easy testing of any algorithm against reference datasets. This enables
   reproducible research and creates a high degree of comparability between

@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 
 ## [Unreleased]
+
+
+## [1.2.0] - 2022-10-25
 ### Added
 - Add new `json` strategy to save and load problem instances
 - Add new (optional) `name` attribute to the `QMKProblem` class
@@ -16,6 +19,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Updated
 - The `io.save_problem_txt` will now first try to use the `problem.name`
   atrribute if the `name` keyword is not given.
+- Change the (sub)title of the package to "QMKPy: A Python Testbed for the
+  Quadratic Multiple Knapsack Problem"
 
 
 ## [1.1.0] - 2022-08-08
