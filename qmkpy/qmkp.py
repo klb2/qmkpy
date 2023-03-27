@@ -282,7 +282,7 @@ def total_profit_qmkp(profits: np.array, assignments: np.array) -> float:
     This function calculates the total profit of a QMKP for a given profit
     matrix :math:`P` and assignments :math:`\\mathcal{A}` as
 
-    .. math:: \\sum_{u=1}^{K}\\left(\\sum_{i\\in\\mathcal{A}_u} p_{i} + \\sum_{\\substack{j\\in\\mathcal{A}_u\\\\j\\neq i}} p_{ij}\\right)
+    .. math:: \\sum_{u=1}^{K}\\left(\\sum_{i\\in\\mathcal{A}_u} p_{i,k} + \\sum_{\\substack{j\\in\\mathcal{A}_u\\\\j\\neq i}} p_{ij,k}\\right)
 
     where :math:`\\mathcal{A}_{u}` is the set of items that are assigned to
     knapsack :math:`u`.
@@ -295,6 +295,8 @@ def total_profit_qmkp(profits: np.array, assignments: np.array) -> float:
         profit values :math:`p_{ij}`. The profit of the single items
         :math:`p_i` corresponds to the main diagonal elements, i.e.,
         :math:`p_i = p_{ii}`.
+        It can also be a three-dimensional profit matrix of size
+        :math:`K\\times N\\times N` for heterogeneous profits.
 
     assignments : np.array
         Binary matrix of size :math:`N\\times K` which represents the final
@@ -310,6 +312,11 @@ def total_profit_qmkp(profits: np.array, assignments: np.array) -> float:
     if not checks.is_binary(assignments):
         raise ValueError("The assignments matrix needs to be binary.")
     _profit_matrix = assignments.T @ profits @ assignments
-    _double_main_diag = assignments.T @ np.diag(profits)
-    ks_profits = _double_main_diag + np.diag(_profit_matrix)
+    #_double_main_diag = assignments.T @ np.diag(profits)
+    #ks_profits = _double_main_diag + np.diag(_profit_matrix)
+    axis = {}
+    if checks.has_heterogeneous_profits(profits):
+        axis = {"axis1": 1, "axis2": 2}
+    _double_main_diag = assignments.T @ np.diagonal(profits, **axis).T
+    ks_profits = np.diag(_double_main_diag+np.diagonal(_profit_matrix, **axis))
     return np.sum(ks_profits) / 2
