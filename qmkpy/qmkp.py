@@ -55,6 +55,27 @@ class QMKProblem:
         Optional name of the problem instance
     """
 
+    def __new__(
+        cls,
+        profits: Union[np.array, Iterable[Iterable]],
+        weights: Iterable[float],
+        capacities: Iterable[float],
+        algorithm: Optional[Callable] = None,
+        args: Optional[tuple] = None,
+        assignments: Optional[np.array] = None,
+        name: Optional[str] = None,
+    ):
+        hetero = checks.has_heterogeneous_profits(profits)
+        if hetero:
+            instance = super(QMKProblem, QMKProblemHP).__new__(QMKProblemHP)
+        else:
+            instance = super(QMKProblem, QMKProblem).__new__(QMKProblem)
+        return instance
+
+    def __getnewargs__(self):
+        return (self.profits, self.weights, self.capacities, self.algorithm,
+                self.args, self.assignments, self.name)
+
     def __init__(
         self,
         profits: Union[np.array, Iterable[Iterable]],
@@ -251,6 +272,9 @@ class QMKProblem:
             raise NotImplementedError("The strategy '%s' is not implemented.", strategy)
         return problem
 
+
+class QMKProblemHP(QMKProblem):
+    pass
 
 def total_profit_qmkp(profits: np.array, assignments: np.array) -> float:
     """Calculate the total profit for given assignments.

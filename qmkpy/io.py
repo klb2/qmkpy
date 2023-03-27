@@ -118,7 +118,7 @@ def save_problem_pickle(fname: Union[str, bytes, os.PathLike], problem):
     """
 
     with open(fname, "wb") as out_file:
-        pickle.dump(problem, out_file)
+        pickle.dump(problem, out_file, protocol=pickle.HIGHEST_PROTOCOL)
 
 
 def load_problem_pickle(fname: Union[str, bytes, os.PathLike]):
