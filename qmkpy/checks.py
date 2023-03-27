@@ -38,15 +38,53 @@ def check_dimensions(
         This function raises a :class:`ValueError`, if there is a mismatch.
     """
 
-    _row_p, _cols_p = np.shape(profits)
-    if not _row_p == _cols_p:
-        raise ValueError("The profit matrix is not square")
-    if weights is not None:
-        num_items = len(weights)
-        if not num_items == _row_p:
-            raise ValueError(
-                "The number of items does not match the number of profits."
-            )
+    if has_heterogeneous_profits(profits):
+        for _profit in profits:
+            check_dimensions(_profit, weights)
+    else:
+        _row_p, _cols_p = np.shape(profits)
+        if not _row_p == _cols_p:
+            raise ValueError("The profit matrix is not square")
+        if weights is not None:
+            num_items = len(weights)
+            if not num_items == _row_p:
+                raise ValueError(
+                    "The number of items does not match the number of profits."
+                )
+
+def has_heterogeneous_profits(profits: np.array) -> bool:
+    """Simple check whether the profits are heterogeneous.
+
+    This functions checks whether the profit matrix is three-dimensional, i.e.,
+    wheter the profits are different for each knapsack.
+
+
+    Parameters
+    ----------
+    profits : np.array
+        Symmetric matrix of size :math:`N\\times N` in the homogeneous case of
+        of size :math:`K\\times N\\times N` in the heterogeneous case.
+
+    Returns
+    -------
+    heterogeneous : bool
+        Returns ``True`` when the array ``profits`` contains heterogeneous
+        profits and ``False`` otherwise.
+
+    Raises
+    ------
+    ValueError
+        Raises a :class:`TypeError` when the provided profit matrix is neither
+        homogenous nor heterogeneous, i.e., it is in an unexpected format.
+    """
+    ndim = np.ndim(profits)
+    if ndim == 2:
+        heterogeneous = False
+    elif ndim == 3:
+        heterogeneous = True
+    else:
+        raise ValueError("The profit matrix is neither heterogeneous nor homogenous.")
+    return heterogeneous
 
 
 def is_binary(x: Iterable[float]) -> bool:

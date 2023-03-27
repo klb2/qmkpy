@@ -172,3 +172,42 @@ def test_symmetric_check_no_raise(profits, expected):
 def test_symmetric_check_raise(profits):
     with pytest.raises(ValueError):
         checks.is_symmetric_profits(profits, raise_error=True)
+
+
+
+
+
+@pytest.mark.parametrize(
+    "profits,expected",
+    (
+        ([[[1, 1, 2, 3], [1, 1, 4, 5], [2, 4, 2, 6], [3, 5, 6, 3]],
+          [[5, 1, 2, 3], [1, 2, 4, 5], [2, 4, 3, 6], [3, 5, 6, 4]], 
+          [[5, 4, 3, 2], [4, 2, 4, 5], [3, 4, 3, 6], [2, 5, 6, 4]]], True),
+        ([[1, 1], [1, 1]], False),
+        ([[[1, 0, 2], [0, 3, 4], [2, 4, 5]], 
+          [[1, 0, 2], [0, 2, 4], [2, 4, 3]],
+          [[0, 1, 2], [1, 2, 3], [2, 3, 4]]], True),
+        ([[1, 2, 3], [2, 1, 4], [3, 4, 5]], False),
+        ([[1, 2], [3, 4]], False),
+    ),
+)
+def test_heterogenoues_profits_check(profits, expected):
+    symmetric = checks.has_heterogeneous_profits(profits)
+    assert symmetric == expected
+
+
+@pytest.mark.parametrize(
+    "profits",
+    (
+        [[[[1, 1, 2, 3], [1, 1, 4, 5], [2, 4, 2, 6], [3, 5, 6, 3]],
+          [[5, 1, 2, 3], [1, 2, 4, 5], [2, 4, 3, 6], [3, 5, 6, 4]], 
+          [[5, 4, 3, 2], [4, 2, 4, 5], [3, 4, 3, 6], [2, 5, 6, 4]]],
+         [[[1, 1, 2, 3], [1, 1, 4, 5], [2, 4, 2, 6], [3, 5, 6, 3]],
+          [[5, 1, 2, 3], [1, 2, 4, 5], [2, 4, 3, 6], [3, 5, 6, 4]], 
+          [[5, 4, 3, 2], [4, 2, 4, 5], [3, 4, 3, 6], [2, 5, 6, 4]]]],
+        [[1, 1], [0, 0, 0, 0], [2, 2, 3]],
+    ),
+)
+def test_heterogeneous_profits_check_raise(profits):
+    with pytest.raises(ValueError):
+        checks.has_heterogeneous_profits(profits)
