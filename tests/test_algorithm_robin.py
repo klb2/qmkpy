@@ -5,8 +5,15 @@ from qmkpy import total_profit_qmkp
 from qmkpy.algorithms import round_robin
 
 
-def test_rr_with_starting():
-    profits = np.array([[1, 1, 2, 3], [1, 1, 4, 5], [2, 4, 2, 6], [3, 5, 6, 3]])
+@pytest.mark.parametrize("profits",
+    (np.array([[1, 1, 2, 3], [1, 1, 4, 5], [2, 4, 2, 6], [3, 5, 6, 3]]),
+     np.array([[[1, 1, 2, 3], [1, 1, 4, 5], [2, 4, 2, 6], [3, 5, 6, 3]],
+               [[6, 0, 2, 3], [0, 3, 7, 1], [2, 7, 3, 6], [3, 1, 6, 9]],
+               [[5, 2, 3, 3], [2, 6, 3, 8], [3, 3, 4, 1], [3, 8, 1, 8]]]),
+    )
+)
+def test_rr_with_starting(profits):
+    #profits = np.array([[1, 1, 2, 3], [1, 1, 4, 5], [2, 4, 2, 6], [3, 5, 6, 3]])
     weights = [1, 3, 2, 2]
     capacities = [5, 5, 3]
     starting_assignment = np.array([[0, 0, 0], [0, 1, 0], [0, 0, 0], [1, 0, 0]])
@@ -20,8 +27,15 @@ def test_rr_with_starting():
     )
 
 
-def test_rr_change_with_starting():
-    profits = np.array([[1, 1, 2, 3], [1, 1, 4, 5], [2, 4, 2, 6], [3, 5, 6, 3]])
+@pytest.mark.parametrize("profits",
+    (np.array([[1, 1, 2, 3], [1, 1, 4, 5], [2, 4, 2, 6], [3, 5, 6, 3]]),
+     np.array([[[1, 1, 2, 3], [1, 1, 4, 5], [2, 4, 2, 6], [3, 5, 6, 3]],
+               [[6, 0, 2, 3], [0, 3, 7, 1], [2, 7, 3, 6], [3, 1, 6, 9]],
+               [[5, 2, 3, 3], [2, 6, 3, 8], [3, 3, 4, 1], [3, 8, 1, 8]]]),
+    )
+)
+def test_rr_change_with_starting(profits):
+    #profits = np.array([[1, 1, 2, 3], [1, 1, 4, 5], [2, 4, 2, 6], [3, 5, 6, 3]])
     weights = [1, 3, 2, 2]
     capacities = [5, 5, 3]
     starting_assignment = np.array([[0, 0, 0], [0, 1, 0], [0, 0, 0], [1, 0, 0]])
@@ -32,6 +46,13 @@ def test_rr_change_with_starting():
     assert np.all(_new_assignments >= 0)
 
 
+@pytest.mark.parametrize("profits",
+    (np.array([[1, 1, 2, 3], [1, 1, 4, 5], [2, 4, 2, 6], [3, 5, 6, 3]]),
+     np.array([[[1, 1, 2, 3], [1, 1, 4, 5], [2, 4, 2, 6], [3, 5, 6, 3]],
+               [[6, 0, 2, 3], [0, 3, 7, 1], [2, 7, 3, 6], [3, 1, 6, 9]],
+               [[5, 2, 3, 3], [2, 6, 3, 8], [3, 3, 4, 1], [3, 8, 1, 8]]]),
+    )
+)
 @pytest.mark.parametrize(
     "starting_assignment",
     (
@@ -43,8 +64,8 @@ def test_rr_change_with_starting():
         [[0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0]],
     ),
 )
-def test_rr_feasibility_starting_assignment(starting_assignment):
-    profits = np.array([[1, 1, 2, 3], [1, 1, 4, 5], [2, 4, 2, 6], [3, 5, 6, 3]])
+def test_rr_feasibility_starting_assignment(profits, starting_assignment):
+    #profits = np.array([[1, 1, 2, 3], [1, 1, 4, 5], [2, 4, 2, 6], [3, 5, 6, 3]])
     weights = [1, 3, 2, 2]
     capacities = [5, 5, 3]
     starting_assignment = np.array(starting_assignment)
@@ -54,6 +75,7 @@ def test_rr_feasibility_starting_assignment(starting_assignment):
         )
 
 
+@pytest.mark.parametrize("heterogeneous", (False, True))
 @pytest.mark.parametrize(
     "order_ks",
     (
@@ -64,11 +86,15 @@ def test_rr_feasibility_starting_assignment(starting_assignment):
         [0, 0, 1, 3, 0, 2, 1],
     ),
 )
-def test_rr_order_ks(order_ks):
+def test_rr_order_ks(heterogeneous, order_ks):
     num_elements = 8
     num_knapsacks = 4
-    profits = np.random.randint(1, 8, size=(num_elements, num_elements))
-    profits = profits @ profits.T
+    if heterogeneous:
+        profits = np.random.randint(1, 8, size=(num_knapsacks, num_elements, num_elements))
+        profits = profits @ profits.transpose([0, 2, 1])
+    else:
+        profits = np.random.randint(1, 8, size=(num_elements, num_elements))
+        profits = profits @ profits.T
     weights = np.random.randint(1, 5, size=(num_elements,))
     capacities = np.random.randint(5, 12, size=(num_knapsacks,))
     solution = round_robin(profits, weights, capacities, order_ks=order_ks)
@@ -78,6 +104,7 @@ def test_rr_order_ks(order_ks):
     )
 
 
+@pytest.mark.parametrize("heterogeneous", (False, True))
 @pytest.mark.parametrize(
     "order_ks",
     (
@@ -86,11 +113,15 @@ def test_rr_order_ks(order_ks):
         [0, -1, -2, -3],
     ),
 )
-def test_rr_order_ks_error(order_ks):
+def test_rr_order_ks_error(heterogeneous, order_ks):
     num_elements = 8
     num_knapsacks = 4
-    profits = np.random.randint(1, 8, size=(num_elements, num_elements))
-    profits = profits @ profits.T
+    if heterogeneous:
+        profits = np.random.randint(1, 8, size=(num_knapsacks, num_elements, num_elements))
+        profits = profits @ profits.transpose([0, 2, 1])
+    else:
+        profits = np.random.randint(1, 8, size=(num_elements, num_elements))
+        profits = profits @ profits.T
     weights = np.random.randint(1, 5, size=(num_elements,))
     capacities = np.random.randint(5, 12, size=(num_knapsacks,))
     with pytest.raises(ValueError):
