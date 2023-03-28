@@ -290,3 +290,125 @@ def test_get_remaining_capacities_chromosome(
 ):
     remain_capac = get_remaining_capacities(weights, capacities, assignments)
     assert np.all(remain_capac == expected)
+
+
+
+@pytest.mark.parametrize(
+    "assignments,expected",
+    (
+        ([1, 3], [[5, 10, 8],
+                  [6/2, 12/2, 8/2],
+                  [12/3, 24/3, 15/3],
+                  [8/4, 16/4, 10/4]]),
+        ([], [[1, 2, 2],
+              [1/2, 1, 1],
+              [2/3, 4/3, 1],
+              [3/4, 6/4, 1]]),
+        ([2], [[3, 6, 5],
+               [5/2, 10/2, 7/2],
+               [2/3, 4/3, 3/3],
+               [9/4, 18/4, 11/4]]),
+        ([0, 1, 2, 3], [[7, 14, 11],
+                        [11/2, 11, 15/2],
+                        [14/3, 28/3, 18/3],
+                        [17/4, 34/4, 21/4]]),
+    ),
+)
+def test_value_density_list_assign_hetero(assignments, expected):
+    profit1 = np.array([[1, 1, 2, 3], [1, 1, 4, 5], [2, 4, 2, 6], [3, 5, 6, 3]])
+    profit2 = np.array([[2, 2, 4, 6], [2, 2, 8, 10], [4, 8, 4, 12], [6, 10, 12, 6]])
+    profit3 = np.array([[2, 2, 3, 4], [2, 2, 5, 6], [3, 5, 3, 7], [4, 6, 7, 4]])
+    profits = np.array([profit1, profit2, profit3])
+    weights = [1, 2, 3, 4]
+    vd = value_density(profits, weights, assignments)
+    assert np.allclose(expected, vd)
+
+@pytest.mark.parametrize(
+    "assignments,expected",
+    (
+        (
+            [[0, 0], [1, 0], [0, 0], [1, 0]],
+            [[5, 2], [6/2, 1], [12/3, 4/3], [8/4, 6/4]],
+        ),
+        (
+            [[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]],
+            [[1, 2, 2],
+             [1/2, 1, 1],
+             [2/3, 4/3, 1],
+             [3/4, 6/4, 1]],
+        ),
+        (
+            [[1, 0], [1, 0], [1, 1], [1, 0]],
+            [[7, 6], [11/2, 5], [14/3, 4/3], [17/4, 18/4]],
+        ),
+    ),
+)
+def test_value_density_matrix_hetero(assignments, expected):
+    profit1 = np.array([[1, 1, 2, 3], [1, 1, 4, 5], [2, 4, 2, 6], [3, 5, 6, 3]])
+    profit2 = np.array([[2, 2, 4, 6], [2, 2, 8, 10], [4, 8, 4, 12], [6, 10, 12, 6]])
+    profit3 = np.array([[2, 2, 3, 4], [2, 2, 5, 6], [3, 5, 3, 7], [4, 6, 7, 4]])
+    num_ks = np.shape(assignments)[1]
+    if num_ks == 2:
+        profits = np.array([profit1, profit2])
+    elif num_ks == 3:
+        profits = np.array([profit1, profit2, profit3])
+    weights = [1, 2, 3, 4]
+    assignments = np.array(assignments)
+    num_ks = np.shape(assignments)[1]
+    vd = value_density(profits, weights, assignments)
+    assert np.all(expected == vd) and np.all(np.shape(vd) == (len(weights), num_ks))
+
+@pytest.mark.parametrize(
+    "assignments,expected",
+    (
+        ([1, 3], [[5, 10, 8],
+                  [12/3, 24/3, 15/3]]),
+        ([], [[1, 2, 2],
+              [1/2, 1, 1],
+              [2/3, 4/3, 1],
+              [3/4, 6/4, 1]]),
+        ([2], [[3, 6, 5],
+               [5/2, 10/2, 7/2],
+               [9/4, 18/4, 11/4]]),
+        ([0, 1, 2, 3], np.empty((0, 3))),
+    ),
+)
+def test_value_density_reduced_output_list_assignment_hetero(assignments, expected):
+    profit1 = np.array([[1, 1, 2, 3], [1, 1, 4, 5], [2, 4, 2, 6], [3, 5, 6, 3]])
+    profit2 = np.array([[2, 2, 4, 6], [2, 2, 8, 10], [4, 8, 4, 12], [6, 10, 12, 6]])
+    profit3 = np.array([[2, 2, 3, 4], [2, 2, 5, 6], [3, 5, 3, 7], [4, 6, 7, 4]])
+    profits = np.array([profit1, profit2, profit3])
+    weights = [1, 2, 3, 4]
+    vd, unassigned = value_density(profits, weights, assignments, reduced_output=True)
+    expected_unassigned = set(range(len(weights))).difference(assignments)
+    assert np.allclose(expected, vd) and set(unassigned) == expected_unassigned
+
+@pytest.mark.parametrize(
+    "assignments,expected",
+    (
+        ([[0, 0], [0, 1], [0, 0], [0, 1]], [[1, 10], [2/3, 24/3]]),
+        (
+            [[0, 0], [0, 0], [0, 0], [0, 0]],
+            [[1, 2], [1/2, 2/2], [2/3, 4/3], [3/4, 6/4]],
+        ),
+        (
+            [[0, 0, 0], [0, 0, 0], [0, 1, 0], [0, 0, 0]],
+            [[1, 6, 2], [1 / 2, 10 / 2, 1], [3 / 4, 18 / 4, 1]],
+        ),
+        ([[0, 0, 1], [0, 1, 0], [1, 0, 0], [0, 0, 1]], np.empty((0, 3))),
+    ),
+)
+def test_value_density_reduced_output_matrix_assignment_hetero(assignments, expected):
+    profit1 = np.array([[1, 1, 2, 3], [1, 1, 4, 5], [2, 4, 2, 6], [3, 5, 6, 3]])
+    profit2 = np.array([[2, 2, 4, 6], [2, 2, 8, 10], [4, 8, 4, 12], [6, 10, 12, 6]])
+    profit3 = np.array([[2, 2, 3, 4], [2, 2, 5, 6], [3, 5, 3, 7], [4, 6, 7, 4]])
+    num_ks = np.shape(assignments)[1]
+    if num_ks == 2:
+        profits = np.array([profit1, profit2])
+    elif num_ks == 3:
+        profits = np.array([profit1, profit2, profit3])
+    weights = [1, 2, 3, 4]
+    vd, unassigned = value_density(profits, weights, assignments, reduced_output=True)
+    _assigned = np.where(np.any(assignments, axis=1))[0]
+    expected_unassigned = set(range(len(weights))).difference(_assigned)
+    assert np.all(expected == vd) and set(unassigned) == expected_unassigned

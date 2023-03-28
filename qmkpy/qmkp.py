@@ -282,7 +282,7 @@ def total_profit_qmkp(profits: np.array, assignments: np.array) -> float:
     This function calculates the total profit of a QMKP for a given profit
     matrix :math:`P` and assignments :math:`\\mathcal{A}` as
 
-    .. math:: \\sum_{u=1}^{K}\\left(\\sum_{i\\in\\mathcal{A}_u} p_{i,k} + \\sum_{\\substack{j\\in\\mathcal{A}_u\\\\j\\neq i}} p_{ij,k}\\right)
+    .. math:: \\sum_{u=1}^{K}\\left(\\sum_{i\\in\\mathcal{A}_u} p_{i,u} + \\sum_{\\substack{j\\in\\mathcal{A}_u\\\\j\\neq i}} p_{ij,u}\\right)
 
     where :math:`\\mathcal{A}_{u}` is the set of items that are assigned to
     knapsack :math:`u`.

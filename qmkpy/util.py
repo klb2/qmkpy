@@ -9,6 +9,8 @@ from typing import Iterable, Union, Optional
 
 import numpy as np
 
+from .checks import has_heterogeneous_profits
+
 
 def value_density(
     profits: np.array,
@@ -89,20 +91,31 @@ def value_density(
         ``reduced_output`` is set to ``True``.
     """
 
+    hetero = has_heterogeneous_profits(profits)
     num_objects = len(weights)
+    num_ks = len(profits) if hetero else 1
     _flat = False
+
     if np.ndim(assignments) == 1:
         _flat = True
         idx_assignments = assignments
-        assignments = np.zeros((num_objects, 1))
+        assignments = np.zeros((num_objects, num_ks))
         assignments[idx_assignments] = 1
     unassigned_items = ~np.any(assignments, axis=1)
     unassigned_items = np.where(unassigned_items)[0]
     contributions = profits @ assignments
-    _main_diag = np.diag(profits)
-    _main_diag_contrib = np.diag(_main_diag) @ (np.ones_like(assignments) - assignments)
+    if has_heterogeneous_profits(profits):
+        contributions = np.diagonal(contributions, axis1=0, axis2=2)
+        _main_diag = np.diagonal(profits, axis1=1, axis2=2).T
+        _main_diag_contrib = (np.ones_like(assignments)-assignments)*_main_diag
+        weights = np.tile(weights, (num_ks, 1)).T
+        _flat = False
+    else:
+        _main_diag = np.diag(profits)
+        _main_diag_contrib = np.diag(_main_diag) @ (np.ones_like(assignments) - assignments)
+        weights = np.reshape(weights, (-1, 1))
     contributions = contributions + _main_diag_contrib
-    densities = contributions / np.reshape(weights, (-1, 1))
+    densities = contributions / weights
     if _flat:
         densities = np.ravel(densities)
     if reduced_output:
