@@ -360,3 +360,59 @@ def get_remaining_capacities(
     load = weights @ assignments
     remain_capac = capacities - load
     return remain_capac
+
+
+def get_possible_assignments(weights: Iterable[float],
+                             capacities: Iterable[float],
+                             assignments: np.array) -> np.array:
+    """Return possible assignments based on remaining weights and unassigned items.
+
+    Return possible new assignments of previously unassigned items to
+    knapsacks. This is basically a simple comparison of the remaining
+    capacities of the knapsacks and the weights of the unassigned items. Note
+    that this is only a single iteration and does not (necessarily) yield a
+    valid assignment.
+
+
+    Parameters
+    ----------
+    weights : list of float
+        List of weights :math:`w_i` of the :math:`N` items that can be
+        assigned.
+
+    capacities : list of float
+        Capacities of the knapsacks. The number of knapsacks :math:`K` is
+        determined as ``K=len(capacities)``.
+
+    assignments : np.array or list of int
+        Either a binary matrix of size :math:`N\\times K` which represents the
+        assignments of items to knapsacks. If :math:`a_{ij}=1`, element
+        :math:`i` is assigned to knapsack :math:`j`.
+        Or assignments in the chromosome form, which is a list of length
+        :math:`N` where :math:`c_{i}=k` means that item :math:`i` is assigned
+        to knapsack :math:`k`. If the item is not assigned, we set
+        :math:`c_{i}=-1`.
+
+    Returns
+    -------
+    possible_assignments : np.array
+        Binary assignment matrix where the rows of the items which were
+        unassigned in `assignments` are set to one for all knapsacks which
+        could support the item.
+
+    unassigned_items : list
+        List of items (as indices) of the items which are unassigned in
+        `assignments`.
+    """
+    assignments = np.array(assignments)
+    if np.ndim(assignments) == 1:
+        num_ks = len(capacities)
+        assignments = assignment_from_chromosome(assignments, num_ks)
+    weights = np.array(weights)
+
+    unassigned_items = get_unassigned_items(assignments)
+    remaining_capac = get_remaining_capacities(weights, capacities, assignments)
+    can_fit = np.expand_dims(weights[unassigned_items], 1) <= remaining_capac
+    new_assignments = np.zeros_like(assignments) + assignments
+    new_assignments[unassigned_items] += can_fit
+    return new_assignments, unassigned_items

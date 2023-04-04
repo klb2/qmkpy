@@ -8,6 +8,7 @@ from qmkpy.util import (
     get_unassigned_items,
     get_empty_knapsacks,
     get_remaining_capacities,
+    get_possible_assignments
 )
 
 
@@ -412,3 +413,21 @@ def test_value_density_reduced_output_matrix_assignment_hetero(assignments, expe
     _assigned = np.where(np.any(assignments, axis=1))[0]
     expected_unassigned = set(range(len(weights))).difference(_assigned)
     assert np.all(expected == vd) and set(unassigned) == expected_unassigned
+
+
+@pytest.mark.parametrize("assignments,expected",
+                         (([0, -1, 2, 0], [[1, 0, 0], [1, 1, 1], [0, 0, 1], [1, 0, 0]]),
+                          ([0, -1, 2, 2], [[1, 0, 0], [1, 1, 0], [0, 0, 1], [0, 0, 1]]),
+                          ([[1, 0, 0], [0, 0, 0], [0, 0, 1], [0, 0, 1]], [[1, 0, 0], [1, 1, 0], [0, 0, 1], [0, 0, 1]]),
+                          ([[0, 1, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]], [[0, 1, 0], [1, 0, 1], [1, 0, 1], [1, 0, 1]]),
+                          ([[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]], [[1, 1, 1], [1, 1, 1], [1, 0, 1], [1, 0, 1]]),
+                         )
+)
+def test_get_possible_assignments(assignments, expected):
+    weights = [1, 2, 3, 4]
+    capacities = [10, 2, 7]
+    new_assignments, unassigned_items = get_possible_assignments(weights,
+                                                                 capacities,
+                                                                 assignments)
+    assert (np.all(unassigned_items == get_unassigned_items(assignments)) and
+            np.all(new_assignments == expected))

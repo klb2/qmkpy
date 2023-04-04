@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 
 ## [Unreleased]
+### Added
+- Add support of heterogeneous profits. This includes the extension of existing
+  solution algorithms to support 3D profit matrices.
+- Add new `utils.get_possible_assignments` function that shows which unassigned
+  items could fit into which knapsacks.
 
 
 ## [1.2.0] - 2022-10-25
